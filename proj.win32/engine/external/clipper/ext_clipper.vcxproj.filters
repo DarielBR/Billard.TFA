@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\external\clipper\clipper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\external\clipper\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{DB15A7FC-790F-31F0-BB27-8A4BD645E154}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

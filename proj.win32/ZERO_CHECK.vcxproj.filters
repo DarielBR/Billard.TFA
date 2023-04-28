@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\proj.win32\CMakeFiles\464c63ad31fe50c9b2f710c0f83ca53c\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{BDF1A936-1420-3A42-853F-A859DC623A0C}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

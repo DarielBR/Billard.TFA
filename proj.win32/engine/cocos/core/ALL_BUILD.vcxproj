@@ -1,0 +1,228 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ResolveNugetPackages>false</ResolveNugetPackages>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|Win32">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|Win32">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{4A65281B-975A-32B6-B010-229358713E0B}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.22621.0</WindowsTargetPlatformVersion>
+    <Platform>Win32</Platform>
+    <ProjectName>ALL_BUILD</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Midl>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Midl>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">
+    <Midl>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">
+    <Midl>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\cocos\CMakeLists.txt">
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Building Custom Rule C:/Users/Dariel/Documents/Projects/cocos2d-x-4.0/Billard.TFA/cocos2d/cocos/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/Dariel/Documents/Projects/cocos2d-x-4.0/Billard.TFA -BC:/Users/Dariel/Documents/Projects/cocos2d-x-4.0/Billard.TFA/proj.win32 --check-stamp-file C:/Users/Dariel/Documents/Projects/cocos2d-x-4.0/Billard.TFA/proj.win32/engine/cocos/core/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\cocos\2d\CMakeLists.txt;C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\cocos\3d\CMakeLists.txt;C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\cocos\audio\CMakeLists.txt;C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\cocos\base\CMakeLists.txt;C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\cocos\editor-support\cocostudio\CMakeLists.txt;C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\cocos\math\CMakeLists.txt;C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\cocos\navmesh\CMakeLists.txt;C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\cocos\network\CMakeLists.txt;C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\cocos\physics\CMakeLists.txt;C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\cocos\physics3d\CMakeLists.txt;C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\cocos\platform\CMakeLists.txt;C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\cocos\renderer\CMakeLists.txt;C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\cocos\ui\CMakeLists.txt;C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\extensions\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\proj.win32\engine\cocos\core\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Building Custom Rule C:/Users/Dariel/Documents/Projects/cocos2d-x-4.0/Billard.TFA/cocos2d/cocos/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/Dariel/Documents/Projects/cocos2d-x-4.0/Billard.TFA -BC:/Users/Dariel/Documents/Projects/cocos2d-x-4.0/Billard.TFA/proj.win32 --check-stamp-file C:/Users/Dariel/Documents/Projects/cocos2d-x-4.0/Billard.TFA/proj.win32/engine/cocos/core/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\cocos\2d\CMakeLists.txt;C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\cocos\3d\CMakeLists.txt;C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\cocos\audio\CMakeLists.txt;C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\cocos\base\CMakeLists.txt;C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\cocos\editor-support\cocostudio\CMakeLists.txt;C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\cocos\math\CMakeLists.txt;C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\cocos\navmesh\CMakeLists.txt;C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\cocos\network\CMakeLists.txt;C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\cocos\physics\CMakeLists.txt;C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\cocos\physics3d\CMakeLists.txt;C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\cocos\platform\CMakeLists.txt;C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\cocos\renderer\CMakeLists.txt;C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\cocos\ui\CMakeLists.txt;C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\extensions\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\proj.win32\engine\cocos\core\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">Building Custom Rule C:/Users/Dariel/Documents/Projects/cocos2d-x-4.0/Billard.TFA/cocos2d/cocos/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/Dariel/Documents/Projects/cocos2d-x-4.0/Billard.TFA -BC:/Users/Dariel/Documents/Projects/cocos2d-x-4.0/Billard.TFA/proj.win32 --check-stamp-file C:/Users/Dariel/Documents/Projects/cocos2d-x-4.0/Billard.TFA/proj.win32/engine/cocos/core/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\cocos\2d\CMakeLists.txt;C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\cocos\3d\CMakeLists.txt;C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\cocos\audio\CMakeLists.txt;C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\cocos\base\CMakeLists.txt;C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\cocos\editor-support\cocostudio\CMakeLists.txt;C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\cocos\math\CMakeLists.txt;C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\cocos\navmesh\CMakeLists.txt;C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\cocos\network\CMakeLists.txt;C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\cocos\physics\CMakeLists.txt;C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\cocos\physics3d\CMakeLists.txt;C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\cocos\platform\CMakeLists.txt;C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\cocos\renderer\CMakeLists.txt;C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\cocos\ui\CMakeLists.txt;C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\extensions\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\proj.win32\engine\cocos\core\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">Building Custom Rule C:/Users/Dariel/Documents/Projects/cocos2d-x-4.0/Billard.TFA/cocos2d/cocos/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/Dariel/Documents/Projects/cocos2d-x-4.0/Billard.TFA -BC:/Users/Dariel/Documents/Projects/cocos2d-x-4.0/Billard.TFA/proj.win32 --check-stamp-file C:/Users/Dariel/Documents/Projects/cocos2d-x-4.0/Billard.TFA/proj.win32/engine/cocos/core/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\cocos\2d\CMakeLists.txt;C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\cocos\3d\CMakeLists.txt;C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\cocos\audio\CMakeLists.txt;C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\cocos\base\CMakeLists.txt;C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\cocos\editor-support\cocostudio\CMakeLists.txt;C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\cocos\math\CMakeLists.txt;C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\cocos\navmesh\CMakeLists.txt;C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\cocos\network\CMakeLists.txt;C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\cocos\physics\CMakeLists.txt;C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\cocos\physics3d\CMakeLists.txt;C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\cocos\platform\CMakeLists.txt;C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\cocos\renderer\CMakeLists.txt;C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\cocos\ui\CMakeLists.txt;C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\cocos2d\extensions\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\proj.win32\engine\cocos\core\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\proj.win32\ZERO_CHECK.vcxproj">
+      <Project>{880A6C4A-4DFA-362E-9550-B7FACD044C79}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\proj.win32\engine\cocos\core\cocos2d.vcxproj">
+      <Project>{14B96D31-A187-3CDC-A20E-3C75840862FE}</Project>
+      <Name>cocos2d</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\proj.win32\engine\external\clipper\ext_clipper.vcxproj">
+      <Project>{7F76F591-8021-3ED4-A5F9-EC40270A9235}</Project>
+      <Name>ext_clipper</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\proj.win32\engine\external\ConvertUTF\ext_convertUTF.vcxproj">
+      <Project>{8DEDD693-8DD1-3910-B594-9B6F1C21D22E}</Project>
+      <Name>ext_convertUTF</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\proj.win32\engine\external\edtaa3func\ext_edtaa3func.vcxproj">
+      <Project>{30974482-B560-3A3E-AF2F-CA67AE230D99}</Project>
+      <Name>ext_edtaa3func</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\proj.win32\engine\external\md5\ext_md5.vcxproj">
+      <Project>{3170E751-6DD0-3D4D-9B02-D38892B8CD3E}</Project>
+      <Name>ext_md5</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\proj.win32\engine\external\poly2tri\ext_poly2tri.vcxproj">
+      <Project>{B973FAFC-52D2-36D8-A383-277BC49D9743}</Project>
+      <Name>ext_poly2tri</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\proj.win32\engine\external\recast\ext_recast.vcxproj">
+      <Project>{BEE61E43-9186-31F4-BA6F-DF4798ED52E8}</Project>
+      <Name>ext_recast</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\proj.win32\engine\external\tinyxml2\ext_tinyxml2.vcxproj">
+      <Project>{6A99079E-2F73-3F54-B742-8F968F325D27}</Project>
+      <Name>ext_tinyxml2</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\proj.win32\engine\external\unzip\ext_unzip.vcxproj">
+      <Project>{1EB104A0-1428-3948-B07A-B0C59F6AA6FE}</Project>
+      <Name>ext_unzip</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\proj.win32\engine\external\xxhash\ext_xxhash.vcxproj">
+      <Project>{DB61246D-1701-3006-9CFB-702F64A68485}</Project>
+      <Name>ext_xxhash</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\proj.win32\engine\external\xxtea\ext_xxtea.vcxproj">
+      <Project>{44D7128D-B30F-3CEC-8AB1-9B1B4B146564}</Project>
+      <Name>ext_xxtea</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\proj.win32\engine\external\external.vcxproj">
+      <Project>{5D9CA930-376B-3648-B23D-4D1BAE0F408D}</Project>
+      <Name>external</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
