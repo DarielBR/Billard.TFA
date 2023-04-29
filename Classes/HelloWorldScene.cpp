@@ -28,6 +28,9 @@
 
 USING_NS_CC;
 
+#define RADIUS 50
+#define MAGNITUDE 10000*5
+
 Scene* HelloWorld::createScene()
 {
     return HelloWorld::create();
@@ -39,6 +42,8 @@ static void problemLoading(const char* filename)
     printf("Error while loading: %s\n", filename);
     printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in HelloWorldScene.cpp\n");
 }
+
+
 
 // on "init" you need to initialize your instance
 bool HelloWorld::init()
@@ -53,91 +58,15 @@ bool HelloWorld::init()
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-    getPhysicsWorld()->setGravity(Vec2(0, -0.98f));
+    getPhysicsWorld()->setGravity(Vec2(0, 0));
     //getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
-    /////////////////////////////
-    // 2. add a menu item with "X" image, which is clicked to quit the program
-    //    you may modify it.
+    
+    Table testTable = Table(this, -1, Vec2(visibleSize.width / 2, visibleSize.height / 2 + 100));
 
-    // add a "close" icon to exit the progress. it's an autorelease object
-    auto closeItem = MenuItemImage::create(
-                                           "CloseNormal.png",
-                                           "CloseSelected.png",
-                                           CC_CALLBACK_1(HelloWorld::menuCloseCallback, this));
+    Ball ball8 = Ball(8, this, 0, testTable.getOffsetFromFootSpot(1, table_half::CENTER));
+    Ball ball9 = Ball(9, this, 0, testTable.getFootSpot());
+    Ball ballCue = Ball(0, this, 0, testTable.getHeadSpot());
 
-    if (closeItem == nullptr ||
-        closeItem->getContentSize().width <= 0 ||
-        closeItem->getContentSize().height <= 0)
-    {
-        problemLoading("'CloseNormal.png' and 'CloseSelected.png'");
-    }
-    else
-    {
-        float x = origin.x + visibleSize.width - closeItem->getContentSize().width/2;
-        float y = origin.y + closeItem->getContentSize().height/2;
-        closeItem->setPosition(Vec2(x,y));
-    }
-
-    // create menu, it's an autorelease object
-    auto menu = Menu::create(closeItem, NULL);
-    menu->setPosition(Vec2::ZERO);
-    this->addChild(menu, 1);
-
-    /////////////////////////////
-    // 3. add your codes below...
-
-    // add a label shows "Hello World"
-    // create and initialize a label
-
-    auto label = Label::createWithTTF("Hello World", "fonts/Marker Felt.ttf", 24);
-    if (label == nullptr)
-    {
-        problemLoading("'fonts/Marker Felt.ttf'");
-    }
-    else
-    {
-        // position the label on the center of the screen
-        label->setPosition(Vec2(origin.x + visibleSize.width/2,
-                                origin.y + visibleSize.height - label->getContentSize().height));
-
-        // add the label as a child to this layer
-        this->addChild(label, 1);
-    }
-
-    // add "HelloWorld" splash screen"
-    auto sprite1 = Sprite::create("res/balls.png");
-    if (sprite1 == nullptr)
-    {
-        problemLoading("'res/balls.png'");
-    }
-    else
-    {
-        // position the sprite on the center of the screen
-        sprite1->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
-
-        // add the sprite as a child to this layer
-        //this->addChild(sprite, 0);
-    }
-    /*
-    auto sprite = Sprite::create("HelloWorld.png");
-    if (sprite == nullptr)
-    {
-        problemLoading("'HelloWorld.png'");
-    }
-    else
-    {
-        // position the sprite on the center of the screen
-        sprite->setPosition(Vec2(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y));
-
-        // add the sprite as a child to this layer
-        sprite1->setScale(0.3f);
-        sprite1->setPosition(Vec2(sprite->getPosition().x, sprite->getPosition().y));
-        sprite->addChild(sprite1);
-        this->addChild(sprite, 0);
-    }
-    auto FBody = PhysicsBody::createBox(sprite->getBoundingBox().size, PHYSICSBODY_MATERIAL_DEFAULT);
-    FBody->setDynamic(true);
-    sprite->addComponent(FBody);*/
 
     /*debug block*/
     auto labelX = Label::createWithTTF("", "fonts/arial.ttf", 18);
@@ -174,16 +103,47 @@ bool HelloWorld::init()
         labelY->setString(std::to_string(e->getCursorY()));
         //labelY->updateContent();
     };
-    _eventDispatcher->addEventListenerWithSceneGraphPriority(mouseListener, this);//debug only
+    //aim aid for player experience
+    cocos2d::DrawNode* aimLine = DrawNode::create();
+    aimLine->setLineWidth(5.0f);
+    addChild(aimLine);
 
-    /*end of debug block*/
+    auto playerListener = EventListenerTouchOneByOne::create();
+    playerListener->setSwallowTouches(true);
 
-    Ball testBall = Ball(ball_group::EIGHT, 8, "res/8.png", this, 0, Vec2(visibleSize.width / 2, visibleSize.height / 2));
+    playerListener->onTouchBegan = [=](Touch* touch, Event* event) {
+        if (ballCue.faceSprite->getBoundingBox().containsPoint(touch->getLocation())) {
+            //playerFBody->setGravityEnable(false);
+            return true;
+        }
+        else {
+            return false;
+        }
 
-    Table testTable = Table(this, -1, Vec2(visibleSize.width/2, visibleSize.height/2 + 100));
+    };
 
-    //testBall.setScale(.10f);
+    playerListener->onTouchMoved = [=](Touch* touch, Event* event) {
+        forceCue = ballCue.faceSprite->getPosition() - touch->getLocation();
+        //move the player along the touch within a radius of 50
+        //normalize the movement
+        if (forceCue.length() > RADIUS) {
+            forceCue.normalize();
+            forceCue *= RADIUS;
+        }
+        aimLine->clear();
+        aimLine->drawLine(cocos2d::Vec2(ballCue.faceSprite->getPosition().x, ballCue.faceSprite->getPosition().y), touch->getLocation(), Color4F::RED);
+    };
+
+    playerListener->onTouchEnded = [=](Touch* touch, Event* event) {
+
+        //n_FBody->setGravityEnable(true);
+        ballCue.phBody->applyForce(forceCue * forceCue.length() * MAGNITUDE);
+        forceCue = cocos2d::Vec2(cocos2d::Vec2::ZERO);
+        aimLine->clear();
+    };
     
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(mouseListener, this);//debug only
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(playerListener, this);//debug only
     
     return true;
 }

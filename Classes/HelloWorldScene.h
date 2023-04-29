@@ -29,12 +29,15 @@
 
 class HelloWorld : public cocos2d::Scene
 {
+private:
+    cocos2d::Vec2 forceCue = cocos2d::Vec2(cocos2d::Vec2::ZERO);
 public:
     static cocos2d::Scene* createScene();
 
     virtual bool init();
     
     // a selector callback
+    void customUpdate(float dt);
     void menuCloseCallback(cocos2d::Ref* pSender);
     
     // implement the "static create()" method manually

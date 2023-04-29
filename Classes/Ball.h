@@ -25,12 +25,14 @@ public:
 	cocos2d::PhysicsBody* phBody;
 
 	//constructor
-	Ball(ball_group group, int number, std::string faceImage, cocos2d::Scene* scene, int zOrder, cocos2d::Vec2 position);
+	Ball(int number, cocos2d::Scene* scene, int zOrder, cocos2d::Vec2 position);
 	//behavior
 	bool isSolid() { return faceGroup == SOLID; };
 	bool isStriped() { return faceGroup == STRIPED; };
 	bool isCueBall() { return faceGroup == CUE; };
 	bool isEightBall() { return faceGroup == EIGHT; };
+
+	//void rotationUpdate(float dt);
 	//Ball(ball_group group, int number, std::string faceImage);
 
 	void setScale(float scale);
