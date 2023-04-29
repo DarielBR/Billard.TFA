@@ -48,3 +48,24 @@ void Table::setScale(float scale) {
 	//shineSprite->setScale(scale);
 	tableSprite->setScale(scale);
 }
+
+Vec2 Table::getOffsetFromFootSpot(int ballPositions, table_half side) {
+	int ballWide = 37;
+	int offsetX = Table::getFootSpot().x + ballPositions * ballWide;
+	int offsetY = NULL;
+	switch (side) {
+		case table_half::RIGHT:
+			offsetY = Table::getFootSpot().y - ballPositions * ballWide;
+			break;
+		case table_half::LEFT:
+			offsetY = Table::getFootSpot().y + ballPositions * ballWide;
+			break;
+		case table_half::CENTER:
+			offsetY = Table::getFootSpot().y;
+			break;
+		default:
+			offsetY = Table::getFootSpot().y;
+	}
+	
+	return Vec2(offsetX, offsetY);
+}
