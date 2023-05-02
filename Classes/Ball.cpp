@@ -88,8 +88,10 @@ Ball::Ball(int number, cocos2d::Scene* scene, int zOrder, cocos2d::Vec2 position
 	phBody->setLinearDamping(damping);
 	phBody->setAngularDamping(damping);
 	phBody->setRotationEnable(false);
-	phBody->setTag(1);
-	phBody->setContactTestBitmask(0xFFFFFFFF);
+	phBody->setTag(faceNumber);
+	phBody->setCategoryBitmask(0x03); //0011 will collide with the border and the pockets
+	phBody->setCollisionBitmask(0x03); //0011
+	phBody->setContactTestBitmask(0x03); //0011
 
 	faceSprite->addComponent(phBody);
 	faceSprite->addChild(shineSprite);

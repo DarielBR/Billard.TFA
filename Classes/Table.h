@@ -18,6 +18,12 @@ public:
 	cocos2d::Sprite* tableSprite;
 	cocos2d::Node* tableBorder;
 	cocos2d::PhysicsBody* phBody;
+	cocos2d::Node* pocketUpLeft;
+	cocos2d::Node* pocketUpCenter;
+	cocos2d::Node* pocketUpRight;
+	cocos2d::Node* pocketDownLeft;
+	cocos2d::Node* pocketDownCenter;
+	cocos2d::Node* pocketDownRight;
 
 	//constructor
 	Table(cocos2d::Scene* scene, int zOrder, cocos2d::Vec2 position);

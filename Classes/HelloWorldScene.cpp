@@ -25,6 +25,7 @@
 #include "HelloWorldScene.h"
 #include "Ball.h"
 #include "Table.h"
+#include "audio/include/AudioEngine.h"
 
 USING_NS_CC;
 
@@ -54,12 +55,21 @@ bool HelloWorld::init()
     {
         return false;
     }
+    /////////////////////////////
+    // 2. Starting audio engine and reproducing intro background music
+    AudioEngine::setEnabled(true);
+    //int fxBallToBall = AudioEngine::play2d("audio/ball_ball.mp3", false, 1.0f, nullptr);
+    //int fxBallToRail = AudioEngine::play2d("audio/ball_rail.mp3", false, 1.0f, nullptr);
+    //int fxBallToPocket = AudioEngine::play2d("audio/ball_pocket.mp3", false, 1.0f, nullptr);
+    //AudioEngine::resume(fxBallToBall);
 
+    /////////////////////////////
+    // 3. Physics World configuration
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
     getPhysicsWorld()->setGravity(Vec2(0, 0));
-    //getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
+    getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
     
     Table testTable = Table(this, -1, Vec2(visibleSize.width / 2, visibleSize.height / 2 + 100));
 
@@ -67,6 +77,29 @@ bool HelloWorld::init()
     Ball ball9 = Ball(9, this, 0, testTable.getFootSpot());
     Ball ballCue = Ball(0, this, 0, testTable.getHeadSpot());
 
+
+    auto collitionListener = cocos2d::EventListenerPhysicsContact::create();
+    collitionListener->onContactBegin = [=](PhysicsContact& contact) {
+        
+        auto nodeA = contact.getShapeA()->getBody()->getNode();
+        auto nodeB = contact.getShapeB()->getBody()->getNode();
+
+        //check for collition with:
+        if (nodeA && nodeB) {
+            if (contact.getShapeA()->getBody()->getTag() == 17
+                || contact.getShapeB()->getBody()->getTag() == 17) {
+                int fxBallToBall = AudioEngine::play2d("audio/ball_rail.mp3", false, 0.1f, nullptr);; //the border
+            }
+            else if (contact.getShapeA()->getBody()->getTag() == 16
+                || contact.getShapeB()->getBody()->getTag() == 16) {
+                int fxBallToBall = AudioEngine::play2d("audio/ball_pocket.mp3", false, 1.0f, nullptr); //the pockets
+            }
+            else {
+                int fxBallToBall = AudioEngine::play2d("audio/ball_ball.mp3", false, 0.5f, nullptr); //the balls
+            } 
+        }
+        return true;
+    };
 
     /*debug block*/
     auto labelX = Label::createWithTTF("", "fonts/arial.ttf", 18);
@@ -142,6 +175,8 @@ bool HelloWorld::init()
         aimLine->clear();
     };
     
+    
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(collitionListener, this);
     _eventDispatcher->addEventListenerWithSceneGraphPriority(mouseListener, this);//debug only
     _eventDispatcher->addEventListenerWithSceneGraphPriority(playerListener, this);//debug only
     
