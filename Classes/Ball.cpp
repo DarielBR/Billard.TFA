@@ -1,4 +1,5 @@
 #include "Ball.h"
+#include "Table.h"
 
 USING_NS_CC;
 
@@ -99,9 +100,4 @@ Ball::Ball(int number, cocos2d::Scene* scene, int zOrder, cocos2d::Vec2 position
 	scene->addChild(faceSprite, zOrder);
 
 	//faceSprite->setScale(.12f);
-}
-
-void Ball::setScale(float scale) {
-	//shineSprite->setScale(scale);
-	faceSprite->setScale(scale);
 }

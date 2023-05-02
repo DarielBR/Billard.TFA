@@ -31,7 +31,7 @@ public:
 	bool isStriped() { return faceGroup == STRIPED; };
 	bool isCueBall() { return faceGroup == CUE; };
 	bool isEightBall() { return faceGroup == EIGHT; };
-
+	void setPosition(cocos2d::Vec2 position) { faceSprite->setPosition(position); };
 	//void rotationUpdate(float dt);
 	//Ball(ball_group group, int number, std::string faceImage);
 

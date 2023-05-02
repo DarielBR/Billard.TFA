@@ -1,4 +1,5 @@
 #include "Table.h"
+#include "Ball.h"
 
 USING_NS_CC;
 
@@ -122,23 +123,147 @@ void Table::setScale(float scale) {
 	tableSprite->setScale(scale);
 }
 
-Vec2 Table::getOffsetFromFootSpot(int ballPositions, table_half side) {
+Vec2 Table::getRackPosition(int position) {
 	int ballWide = 37;
-	int offsetX = Table::getFootSpot().x + ballPositions * ballWide;
+	int offsetX = NULL;
 	int offsetY = NULL;
-	switch (side) {
-		case table_half::RIGHT:
-			offsetY = Table::getFootSpot().y - ballPositions * ballWide;
+	switch (position) {
+		case 1:
+			return Table::getFootSpot();
 			break;
-		case table_half::LEFT:
-			offsetY = Table::getFootSpot().y + ballPositions * ballWide;
+		case 2:
+			offsetX = Table::getFootSpot().x + ballWide-5;
+			offsetY = Table::getFootSpot().y - ballWide/2;
+			return Vec2(offsetX, offsetY);
 			break;
-		case table_half::CENTER:
+		case 3:
+			offsetX = Table::getFootSpot().x + ballWide-5;
+			offsetY = Table::getFootSpot().y + ballWide/2;
+			return Vec2(offsetX, offsetY);
+			break;
+		case 4:
+			offsetX = Table::getFootSpot().x + (ballWide - 5) * 2;
+			offsetY = Table::getFootSpot().y - ballWide;
+			return Vec2(offsetX, offsetY);
+			break;
+		case 5:
+			offsetX = Table::getFootSpot().x + (ballWide - 5) * 2;
+			offsetY = Table::getFootSpot().y + ballWide;
+			return Vec2(offsetX, offsetY);
+			break;
+		case 6:
+			offsetX = Table::getFootSpot().x + (ballWide - 5) * 3;
+			offsetY = Table::getFootSpot().y - ballWide * 1.5f;
+			return Vec2(offsetX, offsetY);
+			break;
+		case 7:
+			offsetX = Table::getFootSpot().x + (ballWide - 5) * 3;
+			offsetY = Table::getFootSpot().y - ballWide * 0.5f;
+			return Vec2(offsetX, offsetY);
+			break;
+		case 8:
+			offsetX = Table::getFootSpot().x + (ballWide - 5) * 3;
+			offsetY = Table::getFootSpot().y + ballWide * 0.5f;
+			return Vec2(offsetX, offsetY);
+			break;
+		case 9:
+			offsetX = Table::getFootSpot().x + (ballWide - 5) * 3;
+			offsetY = Table::getFootSpot().y + ballWide * 1.5f;
+			return Vec2(offsetX, offsetY);
+			break;
+		case 10:
+			offsetX = Table::getFootSpot().x + (ballWide - 5) * 4;
+			offsetY = Table::getFootSpot().y - ballWide * 2.0f;
+			return Vec2(offsetX, offsetY);
+			break;
+		case 11:
+			offsetX = Table::getFootSpot().x + (ballWide - 5) * 4;
+			offsetY = Table::getFootSpot().y - ballWide;
+			return Vec2(offsetX, offsetY);
+			break;
+		case 12:
+			offsetX = Table::getFootSpot().x + (ballWide - 5) * 4;
 			offsetY = Table::getFootSpot().y;
+			return Vec2(offsetX, offsetY);
+			break;
+		case 13:
+			offsetX = Table::getFootSpot().x + (ballWide - 5) * 4;
+			offsetY = Table::getFootSpot().y + ballWide;
+			return Vec2(offsetX, offsetY);
+			break;
+		case 14:
+			offsetX = Table::getFootSpot().x + (ballWide - 5) * 4;
+			offsetY = Table::getFootSpot().y + ballWide * 2.0f;
+			return Vec2(offsetX, offsetY);
 			break;
 		default:
+			offsetX = Table::getFootSpot().x + (ballWide-5) * 2;
 			offsetY = Table::getFootSpot().y;
+			return Vec2(offsetX, offsetY);
+			break;
 	}
-	
-	return Vec2(offsetX, offsetY);
 }
+
+//Provides a magicRack line up for the balls
+std::array<int, 14> Table::magicRack(){
+
+	std::array<int, 14> rackPositions = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 };
+
+	std::random_device randomizer;
+	std::default_random_engine randomEngine(randomizer());
+	std::shuffle(rackPositions.begin(), rackPositions.end(), randomEngine);
+	
+	return rackPositions;
+}
+
+/*
+	b8.setPosition(Table::getRackPosition(15));
+
+	for (int i = 0; i < rackPositions.size(); i++) {
+		switch (i) {
+		case 0:
+			b1.setPosition(table.getRackPosition(rackPositions[i]));
+			break;
+		case 1:
+			b2.setPosition(table.getRackPosition(rackPositions[i]));
+			break;
+		case 2:
+			b3.setPosition(table.getRackPosition(rackPositions[i]));
+			break;
+		case 3:
+			b4.setPosition(table.getRackPosition(rackPositions[i]));
+			break;
+		case 4:
+			b5.setPosition(table.getRackPosition(rackPositions[i]));
+			break;
+		case 5:
+			b6.setPosition(table.getRackPosition(rackPositions[i]));
+			break;
+		case 6:
+			b7.setPosition(table.getRackPosition(rackPositions[i]));
+			break;
+		case 7:
+			b9.setPosition(table.getRackPosition(rackPositions[i]));
+			break;
+		case 8:
+			b10.setPosition(table.getRackPosition(rackPositions[i]));
+			break;
+		case 9:
+			b11.setPosition(table.getRackPosition(rackPositions[i]));
+			break;
+		case 10:
+			b12.setPosition(table.getRackPosition(rackPositions[i]));
+			break;
+		case 11:
+			b13.setPosition(table.getRackPosition(rackPositions[i]));
+			break;
+		case 12:
+			b14.setPosition(table.getRackPosition(rackPositions[i]));
+			break;
+		case 13:
+			b15.setPosition(table.getRackPosition(rackPositions[i]));
+			break;
+		default:
+			break;
+		}
+	}*/

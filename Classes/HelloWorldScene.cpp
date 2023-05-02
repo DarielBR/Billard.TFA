@@ -27,6 +27,7 @@
 #include "Table.h"
 #include "audio/include/AudioEngine.h"
 
+
 USING_NS_CC;
 
 #define RADIUS 50
@@ -69,14 +70,32 @@ bool HelloWorld::init()
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
     getPhysicsWorld()->setGravity(Vec2(0, 0));
-    getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
+    //getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
     
+    ////////////////////////////
+    // 4. Scene Objects
+
     Table testTable = Table(this, -1, Vec2(visibleSize.width / 2, visibleSize.height / 2 + 100));
+    auto rack = testTable.magicRack();
 
-    Ball ball8 = Ball(8, this, 0, testTable.getOffsetFromFootSpot(1, table_half::CENTER));
-    Ball ball9 = Ball(9, this, 0, testTable.getFootSpot());
+    Ball ball1 = Ball(1, this, 0, testTable.getRackPosition(rack[0]));
+    Ball ball2 = Ball(2, this, 0, testTable.getRackPosition(rack[1]));
+    Ball ball3 = Ball(3, this, 0, testTable.getRackPosition(rack[2]));
+    Ball ball4 = Ball(4, this, 0, testTable.getRackPosition(rack[3]));
+    Ball ball5 = Ball(5, this, 0, testTable.getRackPosition(rack[4]));
+    Ball ball6 = Ball(6, this, 0, testTable.getRackPosition(rack[5]));
+    Ball ball7 = Ball(7, this, 0, testTable.getRackPosition(rack[6]));
+    Ball ball8 = Ball(8, this, 0, testTable.getRackPosition(15));
+    Ball ball9 = Ball(9, this, 0, testTable.getRackPosition(rack[7]));
+    Ball ball10 = Ball(10, this, 0, testTable.getRackPosition(rack[8]));
+    Ball ball11 = Ball(11, this, 0, testTable.getRackPosition(rack[9]));
+    Ball ball12 = Ball(12, this, 0, testTable.getRackPosition(rack[10]));
+    Ball ball13 = Ball(13, this, 0, testTable.getRackPosition(rack[11]));
+    Ball ball14 = Ball(14, this, 0, testTable.getRackPosition(rack[12]));
+    Ball ball15 = Ball(15, this, 0, testTable.getRackPosition(rack[13]));
+    
     Ball ballCue = Ball(0, this, 0, testTable.getHeadSpot());
-
+    
 
     auto collitionListener = cocos2d::EventListenerPhysicsContact::create();
     collitionListener->onContactBegin = [=](PhysicsContact& contact) {
@@ -182,7 +201,6 @@ bool HelloWorld::init()
     
     return true;
 }
-
 
 void HelloWorld::menuCloseCallback(Ref* pSender)
 {

@@ -4,6 +4,8 @@
 
 #include <string.h>
 #include "cocos2d.h"
+#include <array>
+#include <random>
 
 enum table_half { LEFT, RIGHT, CENTER};
 
@@ -31,7 +33,9 @@ public:
 	int getHeadStringX() { return headStringX; };
 	cocos2d::Vec2 getHeadSpot() { return headSpot; };
 	cocos2d::Vec2 getFootSpot() { return footSpot; };
-	cocos2d::Vec2 getOffsetFromFootSpot(int ballPositions, table_half side);
+	cocos2d::Vec2 getRackPosition(int position);
+	std::array<int, 14> magicRack();
+	
 	//Ball(ball_group group, int number, std::string faceImage);
 
 	void setScale(float scale);
