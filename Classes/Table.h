@@ -34,11 +34,10 @@ public:
 	cocos2d::Vec2 getHeadSpot() { return headSpot; };
 	cocos2d::Vec2 getFootSpot() { return footSpot; };
 	cocos2d::Vec2 getRackPosition(int position);
-	std::array<int, 14> magicRack();
 	
-	//Ball(ball_group group, int number, std::string faceImage);
-
+	std::array<int, 14> magicRack();
 	void setScale(float scale);
+	void ballFallsIntoPocket(cocos2d::Node* node, int pocketTag, int ballTag);
 };
 
 #endif // __TABLE_H__

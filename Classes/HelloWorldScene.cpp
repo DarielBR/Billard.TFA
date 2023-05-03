@@ -96,22 +96,27 @@ bool HelloWorld::init()
     
     Ball ballCue = Ball(0, this, 0, testTable.getHeadSpot());
     
-
     auto collitionListener = cocos2d::EventListenerPhysicsContact::create();
-    collitionListener->onContactBegin = [=](PhysicsContact& contact) {
+    collitionListener->onContactBegin = [&](PhysicsContact& contact) {
         
         auto nodeA = contact.getShapeA()->getBody()->getNode();
         auto nodeB = contact.getShapeB()->getBody()->getNode();
 
         //check for collition with:
         if (nodeA && nodeB) {
-            if (contact.getShapeA()->getBody()->getTag() == 17
-                || contact.getShapeB()->getBody()->getTag() == 17) {
+            if (contact.getShapeA()->getBody()->getTag() == 16
+                || contact.getShapeB()->getBody()->getTag() == 16) {
                 int fxBallToBall = AudioEngine::play2d("audio/ball_rail.mp3", false, 0.1f, nullptr);; //the border
             }
-            else if (contact.getShapeA()->getBody()->getTag() == 16
-                || contact.getShapeB()->getBody()->getTag() == 16) {
-                int fxBallToBall = AudioEngine::play2d("audio/ball_pocket.mp3", false, 1.0f, nullptr); //the pockets
+            else if (contact.getShapeA()->getBody()->getTag() > 16
+                || contact.getShapeB()->getBody()->getTag() > 16) {
+                    int fxBallToBall = AudioEngine::play2d("audio/ball_pocket.mp3", false, 1.0f, nullptr); //the pockets
+                    if (contact.getShapeA()->getBody()->getTag() < 16) {
+                        testTable.ballFallsIntoPocket(nodeA, contact.getShapeB()->getBody()->getTag(), contact.getShapeA()->getBody()->getTag());
+                    }
+                    if (contact.getShapeB()->getBody()->getTag() < 16) {
+                        testTable.ballFallsIntoPocket(nodeB, contact.getShapeA()->getBody()->getTag(), contact.getShapeB()->getBody()->getTag());
+                    }
             }
             else {
                 int fxBallToBall = AudioEngine::play2d("audio/ball_ball.mp3", false, 0.5f, nullptr); //the balls

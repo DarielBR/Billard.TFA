@@ -43,7 +43,7 @@ Table::Table(cocos2d::Scene* scene, int zOrder, cocos2d::Vec2 position) {
 	phBody->setCategoryBitmask(0x02); //0010
 	phBody->setCollisionBitmask(0x01); //0001
 	phBody->setContactTestBitmask(0x01);
-	phBody->setTag(17);
+	phBody->setTag(16);
 	tableBorder->addComponent(phBody);
 	//Pockes	
 	pocketUpLeft = cocos2d::Node::create();
@@ -53,7 +53,7 @@ Table::Table(cocos2d::Scene* scene, int zOrder, cocos2d::Vec2 position) {
 	phBodyUL->setCategoryBitmask(0x02); //0010
 	phBodyUL->setCollisionBitmask(0x01); //0001
 	phBodyUL->setContactTestBitmask(0x02);
-	phBodyUL->setTag(16);
+	phBodyUL->setTag(17);
 	pocketUpLeft->addComponent(phBodyUL);
 	scene->addChild(pocketUpLeft);
 	
@@ -64,7 +64,7 @@ Table::Table(cocos2d::Scene* scene, int zOrder, cocos2d::Vec2 position) {
 	phBodyUC->setCategoryBitmask(0x02); //0010
 	phBodyUC->setCollisionBitmask(0x01); //0001
 	phBodyUC->setContactTestBitmask(0x02);
-	phBodyUC->setTag(16);
+	phBodyUC->setTag(18);
 	pocketUpCenter->addComponent(phBodyUC);
 	scene->addChild(pocketUpCenter);
 	
@@ -75,7 +75,7 @@ Table::Table(cocos2d::Scene* scene, int zOrder, cocos2d::Vec2 position) {
 	phBodyUR->setCategoryBitmask(0x02); //0010
 	phBodyUR->setCollisionBitmask(0x01); //0001
 	phBodyUR->setContactTestBitmask(0x02);
-	phBodyUR->setTag(16);
+	phBodyUR->setTag(19);
 	pocketUpRight->addComponent(phBodyUR);
 	scene->addChild(pocketUpRight);
 	
@@ -86,7 +86,7 @@ Table::Table(cocos2d::Scene* scene, int zOrder, cocos2d::Vec2 position) {
 	phBodyDR->setCategoryBitmask(0x02); //0010
 	phBodyDR->setCollisionBitmask(0x01); //0001
 	phBodyDR->setContactTestBitmask(0x02);
-	phBodyDR->setTag(16);
+	phBodyDR->setTag(20);
 	pocketDownRight->addComponent(phBodyDR);
 	scene->addChild(pocketDownRight);
 	
@@ -97,7 +97,7 @@ Table::Table(cocos2d::Scene* scene, int zOrder, cocos2d::Vec2 position) {
 	phBodyDC->setCategoryBitmask(0x02); //0010
 	phBodyDC->setCollisionBitmask(0x01); //0001
 	phBodyDC->setContactTestBitmask(0x02);
-	phBodyDC->setTag(16);
+	phBodyDC->setTag(21);
 	pocketDownCenter->addComponent(phBodyDC);
 	scene->addChild(pocketDownCenter);
 				
@@ -108,7 +108,7 @@ Table::Table(cocos2d::Scene* scene, int zOrder, cocos2d::Vec2 position) {
 	phBodyDL->setCategoryBitmask(0x02); //0010
 	phBodyDL->setCollisionBitmask(0x01); //0001
 	phBodyDL->setContactTestBitmask(0x02);
-	phBodyDL->setTag(16);
+	phBodyDL->setTag(22);
 	pocketDownLeft->addComponent(phBodyDL);
 	scene->addChild(pocketDownLeft);
 	//Adding table and border to the scene
@@ -216,54 +216,60 @@ std::array<int, 14> Table::magicRack(){
 	return rackPositions;
 }
 
+//Rolls the ball into the pocket and updates the score
+void Table::ballFallsIntoPocket(cocos2d::Node* node, int pocketTag, int ballTag) {
+	int value = ballTag;//int value is there for scoring purpouses
+	node->removeAllComponents();
+	cocos2d::MoveTo* roll;
+	switch (pocketTag) {
+	case 17:
+		roll = cocos2d::MoveTo::create(0.5f, Vec2(295, 786));
+		break;
+	case 18:
+		roll = cocos2d::MoveTo::create(0.5f, Vec2(750, 803));
+		break;
+	case 19:
+		roll = cocos2d::MoveTo::create(0.5f, Vec2(1208, 786));
+		break;
+	case 20:
+		roll = cocos2d::MoveTo::create(0.5f, Vec2(1208, 317));
+		break;
+	case 21:
+		roll = cocos2d::MoveTo::create(0.5f, Vec2(750, 302));
+		break;
+	case 22:
+		roll = cocos2d::MoveTo::create(0.5f, Vec2(295, 317));
+		break;
+	default:
+		break;
+	}
+	auto delay = cocos2d::DelayTime::create(0.2f);
+	auto shrink = cocos2d::ScaleBy::create(0.5f, 0.7f);
+	auto fadeOut = cocos2d::FadeOut::create(0.5f);
+	auto shrinkAndFade = cocos2d::Spawn::create(shrink, fadeOut, nullptr);
+	auto fallIntoPocket = cocos2d::Sequence::create(roll, delay, shrinkAndFade, delay,
+		CallFunc::create([node]() {node->removeFromParentAndCleanup(true); }),
+		nullptr);
+	node->runAction(fallIntoPocket);
+	//node->removeFromP
+}
 /*
-	b8.setPosition(Table::getRackPosition(15));
-
-	for (int i = 0; i < rackPositions.size(); i++) {
-		switch (i) {
-		case 0:
-			b1.setPosition(table.getRackPosition(rackPositions[i]));
-			break;
-		case 1:
-			b2.setPosition(table.getRackPosition(rackPositions[i]));
-			break;
-		case 2:
-			b3.setPosition(table.getRackPosition(rackPositions[i]));
-			break;
-		case 3:
-			b4.setPosition(table.getRackPosition(rackPositions[i]));
-			break;
-		case 4:
-			b5.setPosition(table.getRackPosition(rackPositions[i]));
-			break;
-		case 5:
-			b6.setPosition(table.getRackPosition(rackPositions[i]));
-			break;
-		case 6:
-			b7.setPosition(table.getRackPosition(rackPositions[i]));
-			break;
-		case 7:
-			b9.setPosition(table.getRackPosition(rackPositions[i]));
-			break;
-		case 8:
-			b10.setPosition(table.getRackPosition(rackPositions[i]));
-			break;
-		case 9:
-			b11.setPosition(table.getRackPosition(rackPositions[i]));
-			break;
-		case 10:
-			b12.setPosition(table.getRackPosition(rackPositions[i]));
-			break;
-		case 11:
-			b13.setPosition(table.getRackPosition(rackPositions[i]));
-			break;
-		case 12:
-			b14.setPosition(table.getRackPosition(rackPositions[i]));
-			break;
-		case 13:
-			b15.setPosition(table.getRackPosition(rackPositions[i]));
-			break;
-		default:
-			break;
-		}
-	}*/
+void Table::ballIntoPocket(cocos2d::Node* node, int pocketTag, int value)
+{
+	node->removeAllComponents();
+	cocos2d::MoveTo* roll;
+	switch(pocketTag){
+	case 17:
+		roll = cocos2d::MoveTo::create(0.5f, Vec2(295,768));
+		break;
+	default:
+		break;
+	}
+	auto delay = cocos2d::DelayTime::create(0.2f);
+	auto shrink = cocos2d::ScaleBy::create(0.5f, 0.7f);
+	auto fadeOut = cocos2d::FadeOut::create(0.5f);
+	auto shrinkAndFade = cocos2d::Spawn::create(shrink, fadeOut, nullptr);
+	auto fallIntoPocket = cocos2d::Sequence::create(roll, delay, shrinkAndFade, nullptr);
+	node->runAction(fallIntoPocket);
+	node->removeFromParentAndCleanup(true);
+}*/

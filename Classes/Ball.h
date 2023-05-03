@@ -18,6 +18,7 @@ private:
 	float friction = 1.0;
 	float damping = 0.25;
 	float angularDamping = 0.25;
+	bool allowRotation;
 
 public:
 	cocos2d::Sprite* faceSprite;
