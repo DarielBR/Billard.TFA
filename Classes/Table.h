@@ -9,6 +9,11 @@
 
 enum table_half { LEFT, RIGHT, CENTER};
 
+struct ScoreNest {
+	bool filled;
+	cocos2d::Vec2 position;
+};
+
 class Table {
 private:
 	int headStringX = 545;
@@ -16,8 +21,12 @@ private:
 	cocos2d::Vec2 centerSpot = cocos2d::Vec2(750, 550);
 	cocos2d::Vec2 footSpot = cocos2d::Vec2(965,550);
 	//cocos2d::Vec2 railBorder[2] = {cocos2d::Vec2::ZERO, cocos2d::Vec2::ZERO};
+	ScoreNest scoreP1[8];
+	ScoreNest scoreP2[8];
 public:
 	cocos2d::Sprite* tableSprite;
+	cocos2d::Sprite* scoreSpriteP1;
+	cocos2d::Sprite* scoreSpriteP2;
 	cocos2d::Node* tableBorder;
 	cocos2d::PhysicsBody* phBody;
 	cocos2d::Node* pocketUpLeft;

@@ -8,7 +8,10 @@ USING_NS_CC;
 Table::Table(cocos2d::Scene* scene, int zOrder, cocos2d::Vec2 position) {
 	tableSprite = cocos2d::Sprite::create("res/table.png");
 	tableSprite->setPosition(position);
-
+	//score racks
+	scoreSpriteP1 = cocos2d::Sprite::create("img/score_rack.png");
+	scoreSpriteP1->setPosition(Vec2(500, 160));// arrange in reference to positioin passed in the costructor
+	//border
 	tableBorder = cocos2d::Node::create();
 
     Vec2 railBorder[] = {
@@ -113,9 +116,14 @@ Table::Table(cocos2d::Scene* scene, int zOrder, cocos2d::Vec2 position) {
 	scene->addChild(pocketDownLeft);
 	//Adding table and border to the scene
 	scene->addChild(tableSprite, zOrder);
+	scene->addChild(scoreSpriteP1, zOrder - 1);
 	scene->addChild(tableBorder, zOrder);
 
 	tableSprite->setScale(.3f);
+
+	//score rack
+	scoreP1[0].filled = false;
+	scoreP1[0].position = cocos2d::Vec2(650, 130);
 }
 
 void Table::setScale(float scale) {
@@ -179,7 +187,7 @@ Vec2 Table::getRackPosition(int position) {
 		case 11:
 			offsetX = Table::getFootSpot().x + (ballWide - 5) * 4;
 			offsetY = Table::getFootSpot().y - ballWide;
-			return Vec2(offsetX, offsetY);
+			return Vec2(offsetX,offsetY);
 			break;
 		case 12:
 			offsetX = Table::getFootSpot().x + (ballWide - 5) * 4;
@@ -243,13 +251,14 @@ void Table::ballFallsIntoPocket(cocos2d::Node* node, int pocketTag, int ballTag)
 	default:
 		break;
 	}
-	auto delay = cocos2d::DelayTime::create(0.2f);
+	auto delay1 = cocos2d::DelayTime::create(0.2f);
 	auto shrink = cocos2d::ScaleBy::create(0.5f, 0.7f);
 	auto fadeOut = cocos2d::FadeOut::create(0.5f);
 	auto shrinkAndFade = cocos2d::Spawn::create(shrink, fadeOut, nullptr);
-	auto fallIntoPocket = cocos2d::Sequence::create(roll, delay, shrinkAndFade, delay,
-		CallFunc::create([node]() {node->removeFromParentAndCleanup(true); }),
-		nullptr);
+	auto moveToScore = cocos2d::MoveTo::create(1.0f, Vec2(625,160));//arreglar para que suceda de manera apropiada
+	auto delay2 = cocos2d::DelayTime::create(0.5f);
+	auto fadeIn = cocos2d::FadeIn::create(0.5f);
+	auto fallIntoPocket = cocos2d::Sequence::create(roll, delay1, shrinkAndFade, moveToScore, delay2, fadeIn, nullptr);
 	node->runAction(fallIntoPocket);
 	//node->removeFromP
 }
