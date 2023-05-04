@@ -19,6 +19,9 @@
     <ClCompile Include="Table.cpp">
       <Filter>Source Files\Classes</Filter>
     </ClCompile>
+    <ClCompile Include="Cue.cpp">
+      <Filter>Source Files\Classes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\Classes\AppDelegate.h">
@@ -55,6 +58,9 @@
       <Filter>Source Files\Classes</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Table.h">
+      <Filter>Source Files\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Cue.h">
       <Filter>Source Files\Classes</Filter>
     </ClInclude>
   </ItemGroup>

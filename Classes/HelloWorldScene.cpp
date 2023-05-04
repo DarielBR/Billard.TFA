@@ -25,6 +25,7 @@
 #include "HelloWorldScene.h"
 #include "Ball.h"
 #include "Table.h"
+#include "Cue.h"
 #include "audio/include/AudioEngine.h"
 
 
@@ -171,6 +172,7 @@ bool HelloWorld::init()
     playerListener->onTouchBegan = [=](Touch* touch, Event* event) {
         if (ballCue.faceSprite->getBoundingBox().containsPoint(touch->getLocation())) {
             //playerFBody->setGravityEnable(false);
+            Cue cue = Cue(this, 2, ballCue.faceSprite->getPosition());
             return true;
         }
         else {
@@ -187,8 +189,17 @@ bool HelloWorld::init()
             forceCue.normalize();
             forceCue *= RADIUS;
         }
-        aimLine->clear();
-        aimLine->drawLine(cocos2d::Vec2(ballCue.faceSprite->getPosition().x, ballCue.faceSprite->getPosition().y), touch->getLocation(), Color4F::RED);
+        //aimLine->clear();
+        //aimLine->drawLine(cocos2d::Vec2(ballCue.faceSprite->getPosition().x, ballCue.faceSprite->getPosition().y), touch->getLocation(), Color4F::RED);
+
+        //movement of the cue
+        auto angle = forceCue.getAngle();
+        this->getChildByTag(23)->setAnchorPoint(Vec2(0.5f, 0.95f + forceCue.length()*0.005f));
+        this->getChildByTag(23)->setPosition(ballCue.faceSprite->getPosition());
+        this->getChildByTag(23)->setRotation((CC_RADIANS_TO_DEGREES(angle) * -1) + 90);
+        //movement of the aim
+        this->getChildByTag(24)->setPosition(ballCue.faceSprite->getPosition());
+        this->getChildByTag(24)->setRotation((CC_RADIANS_TO_DEGREES(angle) * -1) + 90);
     };
 
     playerListener->onTouchEnded = [=](Touch* touch, Event* event) {
@@ -197,6 +208,8 @@ bool HelloWorld::init()
         ballCue.phBody->applyForce(forceCue * forceCue.length() * MAGNITUDE);
         forceCue = cocos2d::Vec2(cocos2d::Vec2::ZERO);
         aimLine->clear();
+        this->removeChildByTag(23, true);
+        this->removeChildByTag(24, true);
     };
     
     

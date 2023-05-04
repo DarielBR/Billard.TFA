@@ -10,7 +10,7 @@ Ball::Ball(int number, cocos2d::Scene* scene, int zOrder, cocos2d::Vec2 position
 	std::string faceImage = "";
 	switch (number) {
 		case 0:
-			faceImage = "img/cue.png";
+			faceImage = "img/cue_ball.png";
 			faceGroup = ball_group::CUE;
 			allowRotation = false;
 			break;
@@ -90,7 +90,7 @@ Ball::Ball(int number, cocos2d::Scene* scene, int zOrder, cocos2d::Vec2 position
 			allowRotation = true;
 			break;
 		default:
-			faceImage = "img/cue.png";
+			faceImage = "img/cue_ball.png";
 			faceGroup = ball_group::CUE;
 			allowRotation = false;
 	}
