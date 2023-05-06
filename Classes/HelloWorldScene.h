@@ -34,18 +34,22 @@ class HelloWorld : public cocos2d::Scene
 {
 private:
     cocos2d::Vec2 forceCue = cocos2d::Vec2(cocos2d::Vec2::ZERO);
-    bool gameStart = true;
+    bool opentable = true;
     bool moveCueBAll = true;
     int playerInTurn = 0;
     ball_group player1Choice = CUE;
+
+    cocos2d::EventListenerTouchOneByOne* playerListener;
     //Table _table = -1;
 public:
     static cocos2d::Scene* createScene();
 
     virtual bool init();
     
+
     // a selector callback
-    void customUpdate(float dt);
+    bool allBodiesStopped();
+    void update(float dt);
     void menuCloseCallback(cocos2d::Ref* pSender);
     // implement the "static create()" method manually
     CREATE_FUNC(HelloWorld);

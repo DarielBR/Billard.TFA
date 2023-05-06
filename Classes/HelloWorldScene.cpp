@@ -102,6 +102,7 @@ bool HelloWorld::init()
     
     Ball ballCue = Ball(0, this, 0, _table.getHeadSpot());
     //cocos2d::Vec2 forceCue = cocos2d::Vec2(0,0);//force to apply on cue ball
+    Cue cue = Cue(this, 2, ballCue.faceSprite->getPosition());
     
     auto collitionListener = cocos2d::EventListenerPhysicsContact::create();
     collitionListener->onContactBegin = [=](PhysicsContact& contact) {
@@ -172,15 +173,16 @@ bool HelloWorld::init()
     aimLine->setLineWidth(5.0f);
     addChild(aimLine);
 
-    auto playerListener = EventListenerTouchOneByOne::create();
+    playerListener = EventListenerTouchOneByOne::create();
     playerListener->setSwallowTouches(true);
+    playerListener->setEnabled(false);
 
     playerListener->onTouchBegan = [=](Touch* touch, Event* event) {
         if (ballCue.faceSprite->getBoundingBox().containsPoint(touch->getLocation())) {
            if (moveCueBAll) return true;
             else {  
                 //playerFBody->setGravityEnable(false);
-                Cue cue = Cue(this, 2, ballCue.faceSprite->getPosition());
+                //Cue cue = Cue(this, 2, ballCue.faceSprite->getPosition());
                 return true;
             }
         }
@@ -220,8 +222,8 @@ bool HelloWorld::init()
             //n_FBody->setGravityEnable(true);
             ballCue.phBody->applyForce(forceCue * forceCue.length() * MAGNITUDE);
             forceCue = cocos2d::Vec2(cocos2d::Vec2::ZERO);
-            this->removeChildByTag(23, true);
-            this->removeChildByTag(24, true);
+            //this->removeChildByTag(23, true);
+            //this->removeChildByTag(24, true);
         }
     };
     
@@ -230,7 +232,41 @@ bool HelloWorld::init()
     _eventDispatcher->addEventListenerWithSceneGraphPriority(mouseListener, this);//debug only
     _eventDispatcher->addEventListenerWithSceneGraphPriority(playerListener, this);//debug only
     
+    this->scheduleUpdate();
+    
     return true;
+}
+
+bool HelloWorld::allBodiesStopped() {
+    bool stopped = true;
+    auto scene = Director::getInstance()->getRunningScene();
+    auto physicsWorld = scene->getPhysicsWorld();
+    auto bodies = physicsWorld->getAllBodies();
+
+    for (auto body : bodies) {
+        if ((body->getVelocity().x > 0.1f || body->getVelocity().y > 0.1f) || (body->getAngularVelocity() > 0.1f)) {
+            stopped = false;
+            break;
+        }
+    }
+    return stopped;
+}
+
+void HelloWorld::update(float dt) {
+    auto scene = Director::getInstance()->getRunningScene();
+    if (allBodiesStopped()) {
+        playerListener->setEnabled(true);
+        auto ballCuePosition = scene->getChildByTag(0)->getPosition();
+        scene->getChildByTag(23)->setPosition(ballCuePosition);
+        scene->getChildByTag(23)->setVisible(true);
+        scene->getChildByTag(24)->setPosition(ballCuePosition);
+        scene->getChildByTag(24)->setVisible(true);
+    } 
+    else {
+        playerListener->setEnabled(false);
+        scene->getChildByTag(23)->setVisible(false);
+        scene->getChildByTag(24)->setVisible(false);
+    } 
 }
 
 void HelloWorld::menuCloseCallback(Ref* pSender)
