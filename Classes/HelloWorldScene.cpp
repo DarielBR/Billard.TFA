@@ -195,6 +195,10 @@ bool HelloWorld::init()
             if (touch->getLocation().x > _table.getHeadStringX()) position.x = _table.getHeadStringX();
             if (touch->getLocation().x < 305 + ballCue.faceSprite->getBoundingBox().size.width / 2)
                 position.x = 310 + ballCue.faceSprite->getBoundingBox().size.width / 2;
+            if (touch->getLocation().y > 775)
+                position.y = 770 - ballCue.faceSprite->getBoundingBox().size.height / 2;
+            if (touch->getLocation().y < 330)
+                position.y = 335 + ballCue.faceSprite->getBoundingBox().size.height / 2;
             ballCue.faceSprite->setPosition(position);
         }
         else{
