@@ -26,11 +26,19 @@
 #define __HELLOWORLD_SCENE_H__
 
 #include "cocos2d.h"
+#include "Ball.h"
+#include "Table.h"
+#include "Cue.h"
 
 class HelloWorld : public cocos2d::Scene
 {
 private:
     cocos2d::Vec2 forceCue = cocos2d::Vec2(cocos2d::Vec2::ZERO);
+    bool gameStart = true;
+    bool moveCueBAll = true;
+    int playerInTurn = 0;
+    ball_group player1Choice = CUE;
+    //Table _table = -1;
 public:
     static cocos2d::Scene* createScene();
 

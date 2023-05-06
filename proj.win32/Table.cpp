@@ -6,11 +6,15 @@ USING_NS_CC;
 #define POCKET_RADIUS 15
 
 Table::Table(cocos2d::Scene* scene, int zOrder, cocos2d::Vec2 position) {
+	
+	//sprites
 	tableSprite = cocos2d::Sprite::create("res/table.png");
 	tableSprite->setPosition(position);
-	//score racks
+	//score racks sprites
 	scoreSpriteP1 = cocos2d::Sprite::create("img/score_rack.png");
 	scoreSpriteP1->setPosition(Vec2(500, 160));// arrange in reference to positioin passed in the costructor
+	scoreSpriteP2 = cocos2d::Sprite::create("img/score_rack.png");
+	scoreSpriteP2->setPosition(Vec2(1000, 160));
 	//border
 	tableBorder = cocos2d::Node::create();
 
@@ -117,6 +121,7 @@ Table::Table(cocos2d::Scene* scene, int zOrder, cocos2d::Vec2 position) {
 	//Adding table and border to the scene
 	scene->addChild(tableSprite, zOrder);
 	scene->addChild(scoreSpriteP1, zOrder - 1);
+	scene->addChild(scoreSpriteP2, zOrder - 1);
 	scene->addChild(tableBorder, zOrder);
 
 	tableSprite->setScale(.3f);
@@ -225,7 +230,7 @@ std::array<int, 14> Table::magicRack(){
 }
 
 //Rolls the ball into the pocket and updates the score
-void Table::ballFallsIntoPocket(cocos2d::Node* node, int pocketTag, int ballTag) {
+void Table::ballFallsIntoPocket(cocos2d::Node* node, int pocketTag, int ballTag) const {
 	int value = ballTag;//int value is there for scoring purpouses
 	node->removeAllComponents();
 	cocos2d::MoveTo* roll;

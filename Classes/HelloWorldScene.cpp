@@ -74,31 +74,37 @@ bool HelloWorld::init()
     //getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
     
     ////////////////////////////
-    // 4. Scene Objects
-
-    Table testTable = Table(this, -1, Vec2(visibleSize.width / 2, visibleSize.height / 2 + 100));
-    auto rack = testTable.magicRack();
-
-    Ball ball1 = Ball(1, this, 0, testTable.getRackPosition(rack[0]));
-    Ball ball2 = Ball(2, this, 0, testTable.getRackPosition(rack[1]));
-    Ball ball3 = Ball(3, this, 0, testTable.getRackPosition(rack[2]));
-    Ball ball4 = Ball(4, this, 0, testTable.getRackPosition(rack[3]));
-    Ball ball5 = Ball(5, this, 0, testTable.getRackPosition(rack[4]));
-    Ball ball6 = Ball(6, this, 0, testTable.getRackPosition(rack[5]));
-    Ball ball7 = Ball(7, this, 0, testTable.getRackPosition(rack[6]));
-    Ball ball8 = Ball(8, this, 0, testTable.getRackPosition(15));
-    Ball ball9 = Ball(9, this, 0, testTable.getRackPosition(rack[7]));
-    Ball ball10 = Ball(10, this, 0, testTable.getRackPosition(rack[8]));
-    Ball ball11 = Ball(11, this, 0, testTable.getRackPosition(rack[9]));
-    Ball ball12 = Ball(12, this, 0, testTable.getRackPosition(rack[10]));
-    Ball ball13 = Ball(13, this, 0, testTable.getRackPosition(rack[11]));
-    Ball ball14 = Ball(14, this, 0, testTable.getRackPosition(rack[12]));
-    Ball ball15 = Ball(15, this, 0, testTable.getRackPosition(rack[13]));
+    // 4. Game rules init
     
-    Ball ballCue = Ball(0, this, 0, testTable.getHeadSpot());
+    
+    
+    ////////////////////////////
+    // 5. Scene Objects
+
+    Table _table = Table(this, -1, Vec2(visibleSize.width / 2, visibleSize.height / 2 + 100));
+    auto rack = _table.magicRack();
+
+    Ball ball1 = Ball(1, this, 0, _table.getRackPosition(rack[0]));
+    Ball ball2 = Ball(2, this, 0, _table.getRackPosition(rack[1]));
+    Ball ball3 = Ball(3, this, 0, _table.getRackPosition(rack[2]));
+    Ball ball4 = Ball(4, this, 0, _table.getRackPosition(rack[3]));
+    Ball ball5 = Ball(5, this, 0, _table.getRackPosition(rack[4]));
+    Ball ball6 = Ball(6, this, 0, _table.getRackPosition(rack[5]));
+    Ball ball7 = Ball(7, this, 0, _table.getRackPosition(rack[6]));
+    Ball ball8 = Ball(8, this, 0, _table.getRackPosition(15));
+    Ball ball9 = Ball(9, this, 0, _table.getRackPosition(rack[7]));
+    Ball ball10 = Ball(10, this, 0, _table.getRackPosition(rack[8]));
+    Ball ball11 = Ball(11, this, 0, _table.getRackPosition(rack[9]));
+    Ball ball12 = Ball(12, this, 0, _table.getRackPosition(rack[10]));
+    Ball ball13 = Ball(13, this, 0, _table.getRackPosition(rack[11]));
+    Ball ball14 = Ball(14, this, 0, _table.getRackPosition(rack[12]));
+    Ball ball15 = Ball(15, this, 0, _table.getRackPosition(rack[13]));
+    
+    Ball ballCue = Ball(0, this, 0, _table.getHeadSpot());
+    //cocos2d::Vec2 forceCue = cocos2d::Vec2(0,0);//force to apply on cue ball
     
     auto collitionListener = cocos2d::EventListenerPhysicsContact::create();
-    collitionListener->onContactBegin = [&](PhysicsContact& contact) {
+    collitionListener->onContactBegin = [=](PhysicsContact& contact) {
         
         auto nodeA = contact.getShapeA()->getBody()->getNode();
         auto nodeB = contact.getShapeB()->getBody()->getNode();
@@ -113,10 +119,10 @@ bool HelloWorld::init()
                 || contact.getShapeB()->getBody()->getTag() > 16) {
                     int fxBallToBall = AudioEngine::play2d("audio/ball_pocket.mp3", false, 1.0f, nullptr); //the pockets
                     if (contact.getShapeA()->getBody()->getTag() < 16) {
-                        testTable.ballFallsIntoPocket(nodeA, contact.getShapeB()->getBody()->getTag(), contact.getShapeA()->getBody()->getTag());
+                        _table.ballFallsIntoPocket(nodeA, contact.getShapeB()->getBody()->getTag(), contact.getShapeA()->getBody()->getTag());
                     }
                     if (contact.getShapeB()->getBody()->getTag() < 16) {
-                        testTable.ballFallsIntoPocket(nodeB, contact.getShapeA()->getBody()->getTag(), contact.getShapeB()->getBody()->getTag());
+                        _table.ballFallsIntoPocket(nodeB, contact.getShapeA()->getBody()->getTag(), contact.getShapeB()->getBody()->getTag());
                     }
             }
             else {
@@ -171,45 +177,52 @@ bool HelloWorld::init()
 
     playerListener->onTouchBegan = [=](Touch* touch, Event* event) {
         if (ballCue.faceSprite->getBoundingBox().containsPoint(touch->getLocation())) {
-            //playerFBody->setGravityEnable(false);
-            Cue cue = Cue(this, 2, ballCue.faceSprite->getPosition());
-            return true;
+           if (moveCueBAll) return true;
+            else {  
+                //playerFBody->setGravityEnable(false);
+                Cue cue = Cue(this, 2, ballCue.faceSprite->getPosition());
+                return true;
+            }
         }
-        else {
-            return false;
-        }
-
+        else return false;
     };
 
     playerListener->onTouchMoved = [=](Touch* touch, Event* event) {
-        forceCue = ballCue.faceSprite->getPosition() - touch->getLocation();
-        //move the player along the touch within a radius of 50
-        //normalize the movement
-        if (forceCue.length() > RADIUS) {
-            forceCue.normalize();
-            forceCue *= RADIUS;
+        if (moveCueBAll) {//set the cue ball position
+            Vec2 position = touch->getLocation();
+            if (touch->getLocation().x > _table.getHeadStringX()) position.x = _table.getHeadStringX();
+            if (touch->getLocation().x < 305 + ballCue.faceSprite->getBoundingBox().size.width / 2)
+                position.x = 310 + ballCue.faceSprite->getBoundingBox().size.width / 2;
+            ballCue.faceSprite->setPosition(position);
         }
-        //aimLine->clear();
-        //aimLine->drawLine(cocos2d::Vec2(ballCue.faceSprite->getPosition().x, ballCue.faceSprite->getPosition().y), touch->getLocation(), Color4F::RED);
-
-        //movement of the cue
-        auto angle = forceCue.getAngle();
-        this->getChildByTag(23)->setAnchorPoint(Vec2(0.5f, 0.95f + forceCue.length()*0.005f));
-        this->getChildByTag(23)->setPosition(ballCue.faceSprite->getPosition());
-        this->getChildByTag(23)->setRotation((CC_RADIANS_TO_DEGREES(angle) * -1) + 90);
-        //movement of the aim
-        this->getChildByTag(24)->setPosition(ballCue.faceSprite->getPosition());
-        this->getChildByTag(24)->setRotation((CC_RADIANS_TO_DEGREES(angle) * -1) + 90);
+        else{
+            forceCue = ballCue.faceSprite->getPosition() - touch->getLocation();
+            //move the player along the touch within a radius of 50
+            //normalize the movement
+            if (forceCue.length() > RADIUS) {
+                forceCue.normalize();
+                forceCue *= RADIUS;
+            }
+            //movement of the cue
+            auto angle = forceCue.getAngle();
+            this->getChildByTag(23)->setAnchorPoint(Vec2(0.5f, 0.95f + forceCue.length() * 0.005f));
+            this->getChildByTag(23)->setPosition(ballCue.faceSprite->getPosition());
+            this->getChildByTag(23)->setRotation((CC_RADIANS_TO_DEGREES(angle) * -1) + 90);
+            //movement of the aim
+            this->getChildByTag(24)->setPosition(ballCue.faceSprite->getPosition());
+            this->getChildByTag(24)->setRotation((CC_RADIANS_TO_DEGREES(angle) * -1) + 90);
+        }
     };
 
     playerListener->onTouchEnded = [=](Touch* touch, Event* event) {
-
-        //n_FBody->setGravityEnable(true);
-        ballCue.phBody->applyForce(forceCue * forceCue.length() * MAGNITUDE);
-        forceCue = cocos2d::Vec2(cocos2d::Vec2::ZERO);
-        aimLine->clear();
-        this->removeChildByTag(23, true);
-        this->removeChildByTag(24, true);
+        if (moveCueBAll) moveCueBAll = false;
+        else{
+            //n_FBody->setGravityEnable(true);
+            ballCue.phBody->applyForce(forceCue * forceCue.length() * MAGNITUDE);
+            forceCue = cocos2d::Vec2(cocos2d::Vec2::ZERO);
+            this->removeChildByTag(23, true);
+            this->removeChildByTag(24, true);
+        }
     };
     
     
