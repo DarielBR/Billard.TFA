@@ -30,27 +30,51 @@
 #include "Table.h"
 #include "Cue.h"
 
+#define LEFT1 625,160
+#define LEFT2 589,160
+#define LEFT3 554,160
+#define LEFT4 518,160
+#define LEFT5 482,160
+#define LEFT6 446,160
+#define LEFT7 409,160
+#define LEFT8 374,160
+#define RIGHT1 875,160
+#define RIGHT2 910,160
+#define RIGHT3 947,160
+#define RIGHT4 982,160
+#define RIGHT5 1018,160
+#define RIGHT6 1053,160
+#define RIGHT7 1089,160
+#define RIGHT8 1123,160
+
 class HelloWorld : public cocos2d::Scene
 {
 private:
     cocos2d::Vec2 forceCue = cocos2d::Vec2(cocos2d::Vec2::ZERO);
-    bool opentable = true;
+    bool openTable = false;//
+    bool onPlay = false;
     bool moveCueBAll = true;
-    int playerInTurn = 0;
-    ball_group player1Choice = CUE;
+    bool illegalPlay = false;
+    int playerInTurn = 1;
+    bool player1Solid = true;
+    bool rackScoreP1[8] = { false };
+    bool rackScoreP2[8] = { false };
+
 
     cocos2d::EventListenerTouchOneByOne* playerListener;
     //Table _table = -1;
 public:
     static cocos2d::Scene* createScene();
-
+    //cocos2d
     virtual bool init();
-    
-
-    // a selector callback
-    bool allBodiesStopped();
     void update(float dt);
     void menuCloseCallback(cocos2d::Ref* pSender);
+    //game play
+    void playGame(cocos2d::PhysicsContact& contact);
+    bool allBodiesStopped();
+    void ballFallsIntoPocket(cocos2d::Node* node, Table table, int pocketTag, int ballTag);
+    cocos2d::Vec2 getRackPosition(int ballTag);
+    void playerChoice(int player, int ballTag);
     // implement the "static create()" method manually
     CREATE_FUNC(HelloWorld);
 };

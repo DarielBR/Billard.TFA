@@ -46,7 +46,7 @@ public:
 	Table(cocos2d::Scene* scene, int zOrder, cocos2d::Vec2 position);
 	//behavior
 	int getHeadStringX() const { return headStringX; };
-	cocos2d::Vec2 getHeadSpot() { return headSpot; };
+	cocos2d::Vec2 getHeadSpot() const { return headSpot; };
 	cocos2d::Vec2 getFootSpot() { return footSpot; };
 	cocos2d::Vec2 getRackPosition(int position);
 	//game rules
@@ -61,7 +61,7 @@ public:
 	std::array<int, 14> magicRack();
 	//visuals
 	void setScale(float scale);
-	void ballFallsIntoPocket(cocos2d::Node* node, int pocketTag, int ballTag) const;
+	//void ballFallsIntoPocket(cocos2d::Node* node, int pocketTag, int ballTag) const;
 };
 
 #endif // __TABLE_H__

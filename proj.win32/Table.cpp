@@ -229,44 +229,6 @@ std::array<int, 14> Table::magicRack(){
 	return rackPositions;
 }
 
-//Rolls the ball into the pocket and updates the score
-void Table::ballFallsIntoPocket(cocos2d::Node* node, int pocketTag, int ballTag) const {
-	int value = ballTag;//int value is there for scoring purpouses
-	node->removeAllComponents();
-	cocos2d::MoveTo* roll;
-	switch (pocketTag) {
-	case 17:
-		roll = cocos2d::MoveTo::create(0.5f, Vec2(295, 786));
-		break;
-	case 18:
-		roll = cocos2d::MoveTo::create(0.5f, Vec2(750, 803));
-		break;
-	case 19:
-		roll = cocos2d::MoveTo::create(0.5f, Vec2(1208, 786));
-		break;
-	case 20:
-		roll = cocos2d::MoveTo::create(0.5f, Vec2(1208, 317));
-		break;
-	case 21:
-		roll = cocos2d::MoveTo::create(0.5f, Vec2(750, 302));
-		break;
-	case 22:
-		roll = cocos2d::MoveTo::create(0.5f, Vec2(295, 317));
-		break;
-	default:
-		break;
-	}
-	auto delay1 = cocos2d::DelayTime::create(0.2f);
-	auto shrink = cocos2d::ScaleBy::create(0.5f, 0.7f);
-	auto fadeOut = cocos2d::FadeOut::create(0.5f);
-	auto shrinkAndFade = cocos2d::Spawn::create(shrink, fadeOut, nullptr);
-	auto moveToScore = cocos2d::MoveTo::create(1.0f, Vec2(625,160));//arreglar para que suceda de manera apropiada
-	auto delay2 = cocos2d::DelayTime::create(0.5f);
-	auto fadeIn = cocos2d::FadeIn::create(0.5f);
-	auto fallIntoPocket = cocos2d::Sequence::create(roll, delay1, shrinkAndFade, moveToScore, delay2, fadeIn, nullptr);
-	node->runAction(fallIntoPocket);
-	//node->removeFromP
-}
 /*
 void Table::ballIntoPocket(cocos2d::Node* node, int pocketTag, int value)
 {

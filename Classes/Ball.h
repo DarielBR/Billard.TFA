@@ -16,8 +16,8 @@ private:
 	float density = 1.5;
 	float restitution = 0.8f;
 	float friction = 1.0;
-	float damping = 0.25;
-	float angularDamping = 0.25;
+	float damping = 0.30;
+	float angularDamping = 0.30;
 	bool allowRotation;
 
 public:

@@ -32,7 +32,7 @@
 USING_NS_CC;
 
 #define RADIUS 50
-#define MAGNITUDE 10000*5
+#define MAGNITUDE 10000*7
 
 Scene* HelloWorld::createScene()
 {
@@ -120,10 +120,10 @@ bool HelloWorld::init()
                 || contact.getShapeB()->getBody()->getTag() > 16) {
                     int fxBallToBall = AudioEngine::play2d("audio/ball_pocket.mp3", false, 1.0f, nullptr); //the pockets
                     if (contact.getShapeA()->getBody()->getTag() < 16) {
-                        _table.ballFallsIntoPocket(nodeA, contact.getShapeB()->getBody()->getTag(), contact.getShapeA()->getBody()->getTag());
+                        ballFallsIntoPocket(nodeA, _table, contact.getShapeB()->getBody()->getTag(), contact.getShapeA()->getBody()->getTag());
                     }
                     if (contact.getShapeB()->getBody()->getTag() < 16) {
-                        _table.ballFallsIntoPocket(nodeB, contact.getShapeA()->getBody()->getTag(), contact.getShapeB()->getBody()->getTag());
+                        ballFallsIntoPocket(nodeB, _table, contact.getShapeA()->getBody()->getTag(), contact.getShapeB()->getBody()->getTag());
                     }
             }
             else {
@@ -168,38 +168,50 @@ bool HelloWorld::init()
         labelY->setString(std::to_string(e->getCursorY()));
         //labelY->updateContent();
     };
-    //aim aid for player experience
-    cocos2d::DrawNode* aimLine = DrawNode::create();
-    aimLine->setLineWidth(5.0f);
-    addChild(aimLine);
-
+    
+    //////////////////////////////////
+    // 6. Touch events hangling
     playerListener = EventListenerTouchOneByOne::create();
     playerListener->setSwallowTouches(true);
     playerListener->setEnabled(false);
 
     playerListener->onTouchBegan = [=](Touch* touch, Event* event) {
-        if (ballCue.faceSprite->getBoundingBox().containsPoint(touch->getLocation())) {
-           if (moveCueBAll) return true;
-            else {  
-                //playerFBody->setGravityEnable(false);
-                //Cue cue = Cue(this, 2, ballCue.faceSprite->getPosition());
-                return true;
-            }
-        }
+        if (ballCue.faceSprite->getBoundingBox().containsPoint(touch->getLocation())) return true;
         else return false;
     };
 
     playerListener->onTouchMoved = [=](Touch* touch, Event* event) {
         if (moveCueBAll) {//set the cue ball position
             Vec2 position = touch->getLocation();
-            if (touch->getLocation().x > _table.getHeadStringX()) position.x = _table.getHeadStringX();
-            if (touch->getLocation().x < 305 + ballCue.faceSprite->getBoundingBox().size.width / 2)
-                position.x = 310 + ballCue.faceSprite->getBoundingBox().size.width / 2;
-            if (touch->getLocation().y > 775)
-                position.y = 770 - ballCue.faceSprite->getBoundingBox().size.height / 2;
-            if (touch->getLocation().y < 330)
-                position.y = 335 + ballCue.faceSprite->getBoundingBox().size.height / 2;
-            ballCue.faceSprite->setPosition(position);
+            if (illegalPlay) {
+                //freezing ball objects
+                auto phBodies = this->getPhysicsWorld()->getAllBodies();
+                for (auto phBody : phBodies) {
+                    if (phBody->getTag() < 16 && phBody->getTag() > 0) {
+                        phBody->setDynamic(false);
+                    }
+                }
+                //colocate the cue ball at any position on the table with every other ball set to non dynamic
+                if (touch->getLocation().x > 1195)
+                    position.x = 1190 - ballCue.faceSprite->getBoundingBox().size.width / 2;
+                if (touch->getLocation().x < 305 + ballCue.faceSprite->getBoundingBox().size.width / 2)
+                    position.x = 310 + ballCue.faceSprite->getBoundingBox().size.width / 2;
+                if (touch->getLocation().y > 775)
+                    position.y = 770 - ballCue.faceSprite->getBoundingBox().size.height / 2;
+                if (touch->getLocation().y < 330)
+                    position.y = 335 + ballCue.faceSprite->getBoundingBox().size.height / 2;
+                ballCue.faceSprite->setPosition(position);
+            }
+            else {
+                if (touch->getLocation().x > _table.getHeadStringX()) position.x = _table.getHeadStringX();
+                if (touch->getLocation().x < 305 + ballCue.faceSprite->getBoundingBox().size.width / 2)
+                    position.x = 310 + ballCue.faceSprite->getBoundingBox().size.width / 2;
+                if (touch->getLocation().y > 775)
+                    position.y = 770 - ballCue.faceSprite->getBoundingBox().size.height / 2;
+                if (touch->getLocation().y < 330)
+                    position.y = 335 + ballCue.faceSprite->getBoundingBox().size.height / 2;
+                ballCue.faceSprite->setPosition(position);
+            }
         }
         else{
             forceCue = ballCue.faceSprite->getPosition() - touch->getLocation();
@@ -222,10 +234,23 @@ bool HelloWorld::init()
 
     playerListener->onTouchEnded = [=](Touch* touch, Event* event) {
         if (moveCueBAll) moveCueBAll = false;
+        if (illegalPlay) {
+            illegalPlay = false;
+            //wait until cue ball is settled
+             while (ballCue.phBody->getVelocity() > Vec2(0.0f, 0.0f)) {
+                auto a = 'a';
+             }
+        }
         else{
-            //n_FBody->setGravityEnable(true);
+            //restoring movibility to balls objects
+            auto phBodies = this->getPhysicsWorld()->getAllBodies();
+            for (auto phBody : phBodies) {
+                if (phBody->getTag() < 16 && phBody->getTag() > 0)
+                    phBody->setDynamic(true);
+            }
             ballCue.phBody->applyForce(forceCue * forceCue.length() * MAGNITUDE);
             forceCue = cocos2d::Vec2(cocos2d::Vec2::ZERO);
+            onPlay = true;
             //this->removeChildByTag(23, true);
             //this->removeChildByTag(24, true);
         }
@@ -254,6 +279,238 @@ bool HelloWorld::allBodiesStopped() {
         }
     }
     return stopped;
+}
+
+void HelloWorld::ballFallsIntoPocket(cocos2d::Node* node, Table table, int pocketTag, int ballTag) {
+    int value = ballTag;//int value is there for scoring purpouses
+
+    cocos2d::MoveTo* roll;
+    switch (pocketTag) {
+    case 17:
+        roll = cocos2d::MoveTo::create(0.5f, Vec2(295, 786));
+        break;
+    case 18:
+        roll = cocos2d::MoveTo::create(0.5f, Vec2(750, 803));
+        break;
+    case 19:
+        roll = cocos2d::MoveTo::create(0.5f, Vec2(1208, 786));
+        break;
+    case 20:
+        roll = cocos2d::MoveTo::create(0.5f, Vec2(1208, 317));
+        break;
+    case 21:
+        roll = cocos2d::MoveTo::create(0.5f, Vec2(750, 302));
+        break;
+    case 22:
+        roll = cocos2d::MoveTo::create(0.5f, Vec2(295, 317));
+        break;
+    default:
+        break;
+    }
+    /*aqui hay que implementar algo para asignar un grupo de bolas a cada jugador*/
+    auto delay1 = cocos2d::DelayTime::create(0.2f);
+    auto shrink = cocos2d::ScaleBy::create(0.5f, 0.7f);
+    auto inflate = cocos2d::ScaleBy::create(0.5f, 1.4f);
+    auto fadeOut = cocos2d::FadeOut::create(0.5f);
+    auto intoPocket = cocos2d::Spawn::create(roll, delay1, shrink, fadeOut, nullptr);
+    auto moveToScore = cocos2d::MoveTo::create(1.0f, getRackPosition(ballTag));//arreglar para que suceda de manera apropiada
+    auto moveToTable = cocos2d::MoveTo::create(1.0f, table.getHeadSpot());
+    auto delay2 = cocos2d::DelayTime::create(0.5f);
+    auto fadeIn = cocos2d::FadeIn::create(0.5f);
+    auto intoTable = cocos2d::Sequence::create(CallFunc::create([node]() {  node->setVisible(false);
+                                                                            node->getPhysicsBody()->setVelocity(Vec2(0.0f, 0.0f));
+                                                                            node->getPhysicsBody()->setAngularVelocity(0.0f); }),
+                                                moveToTable, delay2,
+                                                CallFunc::create([node]() {node->setVisible(true); }),
+                                                nullptr);
+    auto intoScore = cocos2d::Sequence::create(moveToScore, delay2, fadeIn, nullptr);
+    auto cueIntoPocket = cocos2d::Sequence::create(intoPocket, nullptr);
+    auto ballIntoPocket = cocos2d::Sequence::create(intoPocket, intoScore, nullptr);
+    if (ballTag == 0) {
+        moveCueBAll = true;
+        illegalPlay = true;
+        node->runAction(intoTable);
+        
+    } 
+    else {
+        node->removeAllComponents();
+        node->runAction(ballIntoPocket);
+    } 
+}
+
+
+void HelloWorld::playerChoice(int player, int ballTag) {
+    if (openTable) {
+        if (ballTag > 0 && ballTag < 8) {
+            if (playerInTurn == 1) player1Solid = true;
+            else player1Solid = false;
+        }
+        else if (ballTag > 8 && ballTag < 16){
+            if (playerInTurn == 1) player1Solid = false;
+            else player1Solid = true;
+        }
+        
+    }
+    openTable = false;
+}
+
+cocos2d::Vec2 HelloWorld::getRackPosition(int ballTag) {
+    //TODO recorrer el arreglo de posiciones segun el jugador dado y devolver el primer espacio vacio.
+    if (ballTag == 0 || ballTag == 8) return Vec2(Vec2::ZERO);
+    if (player1Solid) {
+        if (ballTag > 0 && ballTag < 8) {
+            for (int i = 0; i < 10; i++) {
+                if (rackScoreP1[i] == false) {
+                    rackScoreP1[i] = true;
+                    switch (i) {
+                    case 0:
+                        return Vec2(LEFT1);
+                        break;
+                    case 1:
+                        return Vec2(LEFT2);
+                        break;
+                    case 2:
+                        return Vec2(LEFT3);
+                        break;
+                    case 3:
+                        return Vec2(LEFT4);
+                        break;
+                    case 4:
+                        return Vec2(LEFT5);
+                        break;
+                    case 5:
+                        return Vec2(LEFT6);
+                        break;
+                    case 6:
+                        return Vec2(LEFT7);
+                        break;
+                    case 7:
+                        return Vec2(LEFT8);
+                        break;
+                    default:
+                        break;
+                    }
+                    break;
+                }
+            }
+        }
+        else {
+            for (int i = 0; i < 10; i++) {
+                if (rackScoreP2[i] == false) {
+                    rackScoreP2[i] = true;
+                    switch (i) {
+                    case 0:
+                        return Vec2(RIGHT1);
+                        break;
+                    case 1:
+                        return Vec2(RIGHT2);
+                        break;
+                    case 2:
+                        return Vec2(RIGHT3);
+                        break;
+                    case 3:
+                        return Vec2(RIGHT4);
+                        break;
+                    case 4:
+                        return Vec2(RIGHT5);
+                        break;
+                    case 5:
+                        return Vec2(RIGHT6);
+                        break;
+                    case 6:
+                        return Vec2(RIGHT7);
+                        break;
+                    case 7:
+                        return Vec2(RIGHT8);
+                        break;
+                    default:
+                        break;
+                    }
+                    break;
+                }
+            }
+        }
+    }
+    else {
+        if (ballTag > 8 && ballTag < 16) {
+            for (int i = 0; i < 10; i++) {
+                if (rackScoreP1[i] == false) {
+                    rackScoreP1[i] = true;
+                    switch (i) {
+                    case 0:
+                        return Vec2(LEFT1);
+                        break;
+                    case 1:
+                        return Vec2(LEFT2);
+                        break;
+                    case 2:
+                        return Vec2(LEFT3);
+                        break;
+                    case 3:
+                        return Vec2(LEFT4);
+                        break;
+                    case 4:
+                        return Vec2(LEFT5);
+                        break;
+                    case 5:
+                        return Vec2(LEFT6);
+                        break;
+                    case 6:
+                        return Vec2(LEFT7);
+                        break;
+                    case 7:
+                        return Vec2(LEFT8);
+                        break;
+                    default:
+                        break;
+                    }
+                    break;
+                }
+            }
+        }
+        else {
+            for (int i = 0; i < 10; i++) {
+                if (rackScoreP2[i] == false) {
+                    rackScoreP2[i] = true;
+                    switch (i) {
+                    case 0:
+                        return Vec2(RIGHT1);
+                        break;
+                    case 1:
+                        return Vec2(RIGHT2);
+                        break;
+                    case 2:
+                        return Vec2(RIGHT3);
+                        break;
+                    case 3:
+                        return Vec2(RIGHT4);
+                        break;
+                    case 4:
+                        return Vec2(RIGHT5);
+                        break;
+                    case 5:
+                        return Vec2(RIGHT6);
+                        break;
+                    case 6:
+                        return Vec2(RIGHT7);
+                        break;
+                    case 7:
+                        return Vec2(RIGHT8);
+                        break;
+                    default:
+                        break;
+                    }
+                    break;
+                }
+            }
+        }
+    }
+    return Vec2(500,160);
+}
+
+void HelloWorld::playGame(cocos2d::PhysicsContact& contact) {
+    auto shapeA = contact.getShapeA();
+    auto shapeB = contact.getShapeB();
 }
 
 void HelloWorld::update(float dt) {
