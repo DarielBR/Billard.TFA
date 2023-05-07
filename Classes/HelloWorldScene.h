@@ -51,8 +51,10 @@ class HelloWorld : public cocos2d::Scene
 {
 private:
     cocos2d::Vec2 forceCue = cocos2d::Vec2(cocos2d::Vec2::ZERO);
-    bool openTable = false;//
+    bool gameStart = true;
+    bool openTable = true;
     bool onPlay = false;
+    int firstContact = 0;
     bool moveCueBAll = true;
     bool illegalPlay = false;
     int playerInTurn = 1;
@@ -70,7 +72,8 @@ public:
     void update(float dt);
     void menuCloseCallback(cocos2d::Ref* pSender);
     //game play
-    void playGame(cocos2d::PhysicsContact& contact);
+    void playGame(cocos2d::Node* nodeBall);
+    void switchPlayer();
     bool allBodiesStopped();
     void ballFallsIntoPocket(cocos2d::Node* node, Table table, int pocketTag, int ballTag);
     cocos2d::Vec2 getRackPosition(int ballTag);

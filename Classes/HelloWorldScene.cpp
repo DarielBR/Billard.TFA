@@ -74,12 +74,7 @@ bool HelloWorld::init()
     //getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
     
     ////////////////////////////
-    // 4. Game rules init
-    
-    
-    
-    ////////////////////////////
-    // 5. Scene Objects
+    // 4. Scene Objects
 
     Table _table = Table(this, -1, Vec2(visibleSize.width / 2, visibleSize.height / 2 + 100));
     auto rack = _table.magicRack();
@@ -103,7 +98,8 @@ bool HelloWorld::init()
     Ball ballCue = Ball(0, this, 0, _table.getHeadSpot());
     //cocos2d::Vec2 forceCue = cocos2d::Vec2(0,0);//force to apply on cue ball
     Cue cue = Cue(this, 2, ballCue.faceSprite->getPosition());
-    
+    ////////////////////////////////////
+    // 5. Collitioin handling
     auto collitionListener = cocos2d::EventListenerPhysicsContact::create();
     collitionListener->onContactBegin = [=](PhysicsContact& contact) {
         
@@ -112,11 +108,10 @@ bool HelloWorld::init()
 
         //check for collition with:
         if (nodeA && nodeB) {
-            if (contact.getShapeA()->getBody()->getTag() == 16
-                || contact.getShapeB()->getBody()->getTag() == 16) {
+            if (contact.getShapeA()->getBody()->getTag() == 16 || contact.getShapeB()->getBody()->getTag() == 16) {
                 int fxBallToBall = AudioEngine::play2d("audio/ball_rail.mp3", false, 0.1f, nullptr);; //the border
             }
-            else if (contact.getShapeA()->getBody()->getTag() > 16
+            if (contact.getShapeA()->getBody()->getTag() > 16
                 || contact.getShapeB()->getBody()->getTag() > 16) {
                     int fxBallToBall = AudioEngine::play2d("audio/ball_pocket.mp3", false, 1.0f, nullptr); //the pockets
                     if (contact.getShapeA()->getBody()->getTag() < 16) {
@@ -127,6 +122,19 @@ bool HelloWorld::init()
                     }
             }
             else {
+                if (firstContact == 0) {
+                    if ((contact.getShapeA()->getBody()->getTag() > 0 && contact.getShapeA()->getBody()->getTag() < 16)
+                        || (contact.getShapeB()->getBody()->getTag() > 0 && contact.getShapeB()->getBody()->getTag() < 16)) {
+                        if (contact.getShapeA()->getBody()->getTag() == 0) {
+                            firstContact = contact.getShapeB()->getBody()->getTag();
+                            playGame(nodeB);
+                        }
+                        else if (contact.getShapeB()->getBody()->getTag() == 0) {
+                            firstContact = contact.getShapeA()->getBody()->getTag();
+                            playGame(nodeA);
+                        }
+                    }
+                }
                 int fxBallToBall = AudioEngine::play2d("audio/ball_ball.mp3", false, 0.5f, nullptr); //the balls
             } 
         }
@@ -176,7 +184,11 @@ bool HelloWorld::init()
     playerListener->setEnabled(false);
 
     playerListener->onTouchBegan = [=](Touch* touch, Event* event) {
-        if (ballCue.faceSprite->getBoundingBox().containsPoint(touch->getLocation())) return true;
+        gameStart = false;
+        if (ballCue.faceSprite->getBoundingBox().containsPoint(touch->getLocation())) {
+            firstContact = 0;
+            return true;
+        } 
         else return false;
     };
 
@@ -266,6 +278,11 @@ bool HelloWorld::init()
     return true;
 }
 
+void HelloWorld::switchPlayer() {
+    if (playerInTurn == 1) playerInTurn = 2;
+    else playerInTurn = 1;
+}
+
 bool HelloWorld::allBodiesStopped() {
     bool stopped = true;
     auto scene = Director::getInstance()->getRunningScene();
@@ -278,12 +295,16 @@ bool HelloWorld::allBodiesStopped() {
             break;
         }
     }
+    if (firstContact == 0 && !gameStart)switchPlayer();///si se llama esta funcion aqui se cambia todo el rato. buscar mecanismo para hacer que funcione
     return stopped;
 }
 
 void HelloWorld::ballFallsIntoPocket(cocos2d::Node* node, Table table, int pocketTag, int ballTag) {
     int value = ballTag;//int value is there for scoring purpouses
-
+    if (ballTag == 8) {
+        //game over
+        //preguntar por player playing y mostrar pantalla de GameOver apropiada
+    }
     cocos2d::MoveTo* roll;
     switch (pocketTag) {
     case 17:
@@ -508,9 +529,24 @@ cocos2d::Vec2 HelloWorld::getRackPosition(int ballTag) {
     return Vec2(500,160);
 }
 
-void HelloWorld::playGame(cocos2d::PhysicsContact& contact) {
-    auto shapeA = contact.getShapeA();
-    auto shapeB = contact.getShapeB();
+void HelloWorld::playGame(cocos2d::Node* nodeBall) {
+    playerChoice(playerInTurn,nodeBall->getTag());
+    if (playerInTurn == 1) {
+        if ((!player1Solid && nodeBall->getTag() > 0 && nodeBall->getTag() < 8)
+            || (player1Solid && nodeBall->getTag() > 8 && nodeBall->getTag() < 16)){
+            //illegalPlay = true;
+            //moveCueBAll = true;
+            switchPlayer();
+        }
+    }else{
+        if ((player1Solid && nodeBall->getTag() > 0 && nodeBall->getTag() < 8)
+            || (!player1Solid && nodeBall->getTag() > 8 && nodeBall->getTag() < 16)) {
+           // illegalPlay = true;
+            //moveCueBAll = true;
+            switchPlayer();
+        }
+    }
+
 }
 
 void HelloWorld::update(float dt) {
@@ -528,6 +564,22 @@ void HelloWorld::update(float dt) {
         scene->getChildByTag(23)->setVisible(false);
         scene->getChildByTag(24)->setVisible(false);
     } 
+    //debug
+    auto labelTurn = Label::createWithTTF("", "fonts/arial.ttf", 18);
+    if (labelTurn == nullptr)
+    {
+        problemLoading("'fonts/Marker Felt.ttf'");
+    }
+    else
+    {
+        // position the label on the center of the screen
+        labelTurn->setPosition(Vec2(150, 140));
+        //label->setColor(Color3B::RED);
+        // add the label as a child to this layer
+        auto scene = Director::getInstance()->getRunningScene();
+        scene->addChild(labelTurn, 5);
+    }
+    labelTurn->setString(std::to_string(playerInTurn));
 }
 
 void HelloWorld::menuCloseCallback(Ref* pSender)
