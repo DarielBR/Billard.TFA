@@ -127,8 +127,7 @@ bool HelloWorld::init()
             if (contact.getShapeA()->getBody()->getTag() == 16 || contact.getShapeB()->getBody()->getTag() == 16) {
                 int fxBallToBall = AudioEngine::play2d("audio/ball_rail.mp3", false, 0.1f, nullptr);; //the border
             }
-            if (contact.getShapeA()->getBody()->getTag() > 16
-                || contact.getShapeB()->getBody()->getTag() > 16) {
+            else if (contact.getShapeA()->getBody()->getTag() > 16 || contact.getShapeB()->getBody()->getTag() > 16) {
                     int fxBallToBall = AudioEngine::play2d("audio/ball_pocket.mp3", false, 1.0f, nullptr); //the pockets
                     counterPocketed++;
                     if (contact.getShapeA()->getBody()->getTag() < 16) {
@@ -140,7 +139,7 @@ bool HelloWorld::init()
                         ballFallsIntoPocket(nodeB, _table, contact.getShapeA()->getBody()->getTag(), contact.getShapeB()->getBody()->getTag());
                     }
             }
-            else {//a ball-ball contact has been detected
+            else if(contact.getShapeA()->getBody()->getTag() < 16 && contact.getShapeB()->getBody()->getTag() < 16){//a ball-ball contact has been detected
                 int fxBallToBall = AudioEngine::play2d("audio/ball_ball.mp3", false, 0.5f, nullptr); //ball hit
                 if (firstContact == 0) {//we only care for the first contact between the cue ball and other ball
                     if ((contact.getShapeA()->getBody()->getTag() > 0 && contact.getShapeA()->getBody()->getTag() < 16)//shapeA is a ball OR
@@ -342,7 +341,7 @@ bool HelloWorld::playIsOn() {
     auto phBodies = scene->getPhysicsWorld()->getAllBodies();
     for (auto phBody : phBodies) {
         if (phBody->getTag() < 16) {
-            if (phBody->getVelocity().x > 0.1f || phBody->getVelocity().y > 0.1f || phBody->getAngularVelocity() > 0.1f) {
+            if (phBody->getVelocity().x > 0.001f || phBody->getVelocity().y > 0.001f || phBody->getAngularVelocity() > 0.001f) {
                 //if (phBody->getVelocity().x < 0.001f || phBody->getVelocity().y < 0.001f || phBody->getAngularVelocity() < 0.001f) {
                 //    phBody->setVelocity(Vec2(0.0f, 0.0f));
                 //    phBody->setAngularVelocity(0.0f);
@@ -394,6 +393,7 @@ bool HelloWorld::isContactWith8Bad() {
             else return false;
         }
     }
+    return false;
 }
 
 void HelloWorld::playResult() {
@@ -494,12 +494,24 @@ void HelloWorld::ballFallsIntoPocket(cocos2d::Node* node, Table table, int pocke
 void HelloWorld::playerChoice(int ballTag) {//quitar el prametro player: no se usa
     if (openTable) {//this register starts on true state
         if (ballTag > 0 && ballTag < 8) {
-            if (playerInTurn == 1) player1Solid = true;
-            else player1Solid = false;
+            if (playerInTurn == 1) {
+                player1Solid = true;
+                firstContact = ballTag;
+            }
+            else {
+                player1Solid = false;
+                firstContact = ballTag;
+            } 
         }
         else if (ballTag > 8 && ballTag < 16){
-            if (playerInTurn == 1) player1Solid = false;
-            else player1Solid = true;
+            if (playerInTurn == 1) {
+                player1Solid = false;
+                firstContact = ballTag;
+            }
+            else {
+                player1Solid = true;
+                firstContact = ballTag;
+            }
         }
         
     }
@@ -546,7 +558,7 @@ cocos2d::Vec2 HelloWorld::getRackPosition(int ballTag) {
                 }
             }
         }
-        else {
+        else if(ballTag > 8 && ballTag < 16){
             for (int i = 0; i < 10; i++) {
                 if (rackScoreP2[i] == false) {
                     rackScoreP2[i] = true;
@@ -583,7 +595,7 @@ cocos2d::Vec2 HelloWorld::getRackPosition(int ballTag) {
             }
         }
     }
-    else {
+    else if(!player1Solid) {
         if (ballTag > 8 && ballTag < 16) {
             for (int i = 0; i < 10; i++) {
                 if (rackScoreP1[i] == false) {
@@ -620,7 +632,7 @@ cocos2d::Vec2 HelloWorld::getRackPosition(int ballTag) {
                 }
             }
         }
-        else {
+        else if(ballTag > 0 && ballTag < 8){
             for (int i = 0; i < 10; i++) {
                 if (rackScoreP2[i] == false) {
                     rackScoreP2[i] = true;
@@ -657,7 +669,7 @@ cocos2d::Vec2 HelloWorld::getRackPosition(int ballTag) {
             }
         }
     }
-    return Vec2(500,160);
+    //return Vec2(500,160);
 }
 
 void HelloWorld::playGame() {
@@ -709,7 +721,8 @@ void HelloWorld::update(float dt) {//Visuals for the cue and aim
     }
 
     //evaluating the result of the play
-    if (playHasStart && !playIsOn()) {
+    auto debugPlay = playIsOn();
+    if (playHasStart && !debugPlay) {
         playResult();
     }
 }

@@ -13,11 +13,11 @@ private:
 	int faceNumber;
 	ball_group faceGroup;
 	//physics values
-	float density = 1.5;
+	float density = 1.0;
 	float restitution = 0.8f;
 	float friction = 1.0;
-	float damping = 0.30;
-	float angularDamping = 0.30;
+	float damping = 0.60;
+	float angularDamping = 0.60;
 	bool allowRotation;
 
 public:
