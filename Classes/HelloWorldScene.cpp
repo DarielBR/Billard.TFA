@@ -32,7 +32,7 @@
 USING_NS_CC;
 
 #define RADIUS 50
-#define MAGNITUDE 10000*7
+#define MAGNITUDE 1000//10000*7
 
 Scene* HelloWorld::createScene()
 {
@@ -133,9 +133,11 @@ bool HelloWorld::init()
                     counterPocketed++;
                     if (contact.getShapeA()->getBody()->getTag() < 16) {
                         ballFallsIntoPocket(nodeA, _table, contact.getShapeB()->getBody()->getTag(), contact.getShapeA()->getBody()->getTag());
+                        playerChoice(nodeA->getTag());
                     }
                     if (contact.getShapeB()->getBody()->getTag() < 16) {
                         ballFallsIntoPocket(nodeB, _table, contact.getShapeA()->getBody()->getTag(), contact.getShapeB()->getBody()->getTag());
+                        playerChoice(nodeB->getTag());
                     }
             }
             else {//a ball-ball contact has been detected
@@ -145,12 +147,12 @@ bool HelloWorld::init()
                         || (contact.getShapeB()->getBody()->getTag() > 0 && contact.getShapeB()->getBody()->getTag() < 16)) {//shapeB is a ball
                         if (contact.getShapeA()->getBody()->getTag() == 0) {//is shapeA the cue-ball?
                             firstContact = contact.getShapeB()->getBody()->getTag();//then the first contact is shapeB
-                            playerChoice(firstContact);
+                            //playerChoice(firstContact);
                             //playGame(nodeB);//call to the game rules
                         }
                         else if (contact.getShapeB()->getBody()->getTag() == 0) {//is shapeB the cue-ball
                             firstContact = contact.getShapeA()->getBody()->getTag();//then the first contact is shapeA
-                            playerChoice(firstContact);
+                            //playerChoice(firstContact);
                             //playGame(nodeA);//idem
                         }
                     }
@@ -308,7 +310,8 @@ bool HelloWorld::init()
                 if (phBody->getTag() < 16 && phBody->getTag() > 0)
                     phBody->setDynamic(true);
             }
-            ballCue.phBody->applyForce(forceCue * forceCue.length() * MAGNITUDE);
+            ballCue.phBody->applyImpulse(forceCue* forceCue.length()* MAGNITUDE);
+            //ballCue.phBody->applyForce(forceCue * forceCue.length() * MAGNITUDE);
             forceCue = cocos2d::Vec2(cocos2d::Vec2::ZERO);
             firstContact = 0;//reset
             counterPocketed = 0;//reset
@@ -339,17 +342,17 @@ bool HelloWorld::playIsOn() {
     auto phBodies = scene->getPhysicsWorld()->getAllBodies();
     for (auto phBody : phBodies) {
         if (phBody->getTag() < 16) {
-            if (phBody->getVelocity().x > 0.0f || phBody->getVelocity().y > 0.0f || phBody->getAngularVelocity() > 0.0f) {
-                if (phBody->getVelocity().x < 0.001f || phBody->getVelocity().y < 0.001f || phBody->getAngularVelocity() < 0.001f) {
-                    phBody->setVelocity(Vec2(0.0f, 0.0f));
-                    phBody->setAngularVelocity(0.0f);
-                }
-                return false;
+            if (phBody->getVelocity().x > 0.1f || phBody->getVelocity().y > 0.1f || phBody->getAngularVelocity() > 0.1f) {
+                //if (phBody->getVelocity().x < 0.001f || phBody->getVelocity().y < 0.001f || phBody->getAngularVelocity() < 0.001f) {
+                //    phBody->setVelocity(Vec2(0.0f, 0.0f));
+                //    phBody->setAngularVelocity(0.0f);
+                //}
+                return true;
                 break;
             }
         }
     }
-    return true;
+    return false;
 }
 
 bool HelloWorld::otherBallGroupHittedFirst() {
