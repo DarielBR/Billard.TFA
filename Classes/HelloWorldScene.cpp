@@ -74,6 +74,22 @@ bool HelloWorld::init()
     //getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
     
     ////////////////////////////
+    // 3. Flags and Registers initialization
+    gameIsOn = false;
+    openTable = true;
+    onPlay = false;
+    playHasStart = false;
+    firstContact = 0;
+    counterPocketed = 0;
+    moveCueBAll = true;
+    illegalPlay = false;
+    playerInTurn = 1;
+    player1Solid = true;
+    rackScoreP1[8] = { false };
+    rackScoreP2[8] = { false };
+
+
+    ////////////////////////////
     // 4. Scene Objects
 
     Table _table = Table(this, -1, Vec2(visibleSize.width / 2, visibleSize.height / 2 + 100));
@@ -114,6 +130,7 @@ bool HelloWorld::init()
             if (contact.getShapeA()->getBody()->getTag() > 16
                 || contact.getShapeB()->getBody()->getTag() > 16) {
                     int fxBallToBall = AudioEngine::play2d("audio/ball_pocket.mp3", false, 1.0f, nullptr); //the pockets
+                    counterPocketed++;
                     if (contact.getShapeA()->getBody()->getTag() < 16) {
                         ballFallsIntoPocket(nodeA, _table, contact.getShapeB()->getBody()->getTag(), contact.getShapeA()->getBody()->getTag());
                     }
@@ -121,27 +138,53 @@ bool HelloWorld::init()
                         ballFallsIntoPocket(nodeB, _table, contact.getShapeA()->getBody()->getTag(), contact.getShapeB()->getBody()->getTag());
                     }
             }
-            else {
-                if (firstContact == 0) {
-                    if ((contact.getShapeA()->getBody()->getTag() > 0 && contact.getShapeA()->getBody()->getTag() < 16)
-                        || (contact.getShapeB()->getBody()->getTag() > 0 && contact.getShapeB()->getBody()->getTag() < 16)) {
-                        if (contact.getShapeA()->getBody()->getTag() == 0) {
-                            firstContact = contact.getShapeB()->getBody()->getTag();
-                            playGame(nodeB);
+            else {//a ball-ball contact has been detected
+                int fxBallToBall = AudioEngine::play2d("audio/ball_ball.mp3", false, 0.5f, nullptr); //ball hit
+                if (firstContact == 0) {//we only care for the first contact between the cue ball and other ball
+                    if ((contact.getShapeA()->getBody()->getTag() > 0 && contact.getShapeA()->getBody()->getTag() < 16)//shapeA is a ball OR
+                        || (contact.getShapeB()->getBody()->getTag() > 0 && contact.getShapeB()->getBody()->getTag() < 16)) {//shapeB is a ball
+                        if (contact.getShapeA()->getBody()->getTag() == 0) {//is shapeA the cue-ball?
+                            firstContact = contact.getShapeB()->getBody()->getTag();//then the first contact is shapeB
+                            playerChoice(firstContact);
+                            //playGame(nodeB);//call to the game rules
                         }
-                        else if (contact.getShapeB()->getBody()->getTag() == 0) {
-                            firstContact = contact.getShapeA()->getBody()->getTag();
-                            playGame(nodeA);
+                        else if (contact.getShapeB()->getBody()->getTag() == 0) {//is shapeB the cue-ball
+                            firstContact = contact.getShapeA()->getBody()->getTag();//then the first contact is shapeA
+                            playerChoice(firstContact);
+                            //playGame(nodeA);//idem
                         }
                     }
                 }
-                int fxBallToBall = AudioEngine::play2d("audio/ball_ball.mp3", false, 0.5f, nullptr); //the balls
             } 
         }
         return true;
     };
 
     /*debug block*/
+    auto labelOnPlay = Label::createWithTTF("", "fonts/arial.ttf", 18);
+    labelOnPlay->setPosition(Vec2(100, 260));
+    this->addChild(labelOnPlay, 5);
+    auto labelOpenTable = Label::createWithTTF("", "fonts/arial.ttf", 18);
+    labelOpenTable->setPosition(Vec2(100, 240));
+    this->addChild(labelOpenTable, 5);
+    auto labelHits = Label::createWithTTF("", "fonts/arial.ttf", 18);
+    labelHits->setPosition(Vec2(100, 220));
+    this->addChild(labelHits, 5);
+    auto labelChoice = Label::createWithTTF("", "fonts/arial.ttf", 18);
+    labelChoice->setPosition(Vec2(100, 200));
+    this->addChild(labelChoice, 5);
+    auto labelTurn = Label::createWithTTF("", "fonts/arial.ttf", 18);
+    labelTurn->setPosition(Vec2(100, 180));
+    this->addChild(labelTurn, 5);
+    auto labelFirstContact = Label::createWithTTF("", "fonts/arial.ttf", 18);
+    labelFirstContact->setPosition(Vec2(100, 160));
+    this->addChild(labelFirstContact, 5);
+
+    
+    
+    
+    
+
     auto labelX = Label::createWithTTF("", "fonts/arial.ttf", 18);
     if (labelX == nullptr)
     {
@@ -175,6 +218,12 @@ bool HelloWorld::init()
         //labelX->updateContent();
         labelY->setString(std::to_string(e->getCursorY()));
         //labelY->updateContent();
+        labelTurn->setString("player in turn " + std::to_string(playerInTurn));
+        labelFirstContact->setString("first contact " + std::to_string(firstContact));
+        labelOpenTable->setString("is table open: " + std::to_string(openTable));
+        labelOnPlay->setString("is on a play: " + std::to_string(onPlay));
+        labelChoice->setString("player 1 has solids: " + std::to_string(player1Solid));
+        labelHits->setString("number of pocketed: " + std::to_string(counterPocketed));
     };
     
     //////////////////////////////////
@@ -184,9 +233,8 @@ bool HelloWorld::init()
     playerListener->setEnabled(false);
 
     playerListener->onTouchBegan = [=](Touch* touch, Event* event) {
-        gameStart = false;
+     
         if (ballCue.faceSprite->getBoundingBox().containsPoint(touch->getLocation())) {
-            firstContact = 0;
             return true;
         } 
         else return false;
@@ -245,7 +293,6 @@ bool HelloWorld::init()
     };
 
     playerListener->onTouchEnded = [=](Touch* touch, Event* event) {
-        if (moveCueBAll) moveCueBAll = false;
         if (illegalPlay) {
             illegalPlay = false;
             //wait until cue ball is settled
@@ -253,6 +300,7 @@ bool HelloWorld::init()
                 auto a = 'a';
              }
         }
+        if (moveCueBAll) moveCueBAll = false;
         else{
             //restoring movibility to balls objects
             auto phBodies = this->getPhysicsWorld()->getAllBodies();
@@ -262,7 +310,10 @@ bool HelloWorld::init()
             }
             ballCue.phBody->applyForce(forceCue * forceCue.length() * MAGNITUDE);
             forceCue = cocos2d::Vec2(cocos2d::Vec2::ZERO);
-            onPlay = true;
+            firstContact = 0;//reset
+            counterPocketed = 0;//reset
+            playHasStart = true;
+            //onPlay = true;//on a play
             //this->removeChildByTag(23, true);
             //this->removeChildByTag(24, true);
         }
@@ -280,7 +331,61 @@ bool HelloWorld::init()
 
 void HelloWorld::switchPlayer() {
     if (playerInTurn == 1) playerInTurn = 2;
-    else playerInTurn = 1;
+    else if(playerInTurn == 2) playerInTurn = 1;
+}
+
+bool HelloWorld::playIsOn() {
+    auto scene = Director::getInstance()->getRunningScene();
+    auto phBodies = scene->getPhysicsWorld()->getAllBodies();
+    for (auto phBody : phBodies) {
+        if (phBody->getTag() < 16) {
+            if (phBody->getVelocity().x > 0.0f || phBody->getVelocity().y > 0.0f || phBody->getAngularVelocity() > 0.0f) {
+                if (phBody->getVelocity().x < 0.001f || phBody->getVelocity().y < 0.001f || phBody->getAngularVelocity() < 0.001f) {
+                    phBody->setVelocity(Vec2(0.0f, 0.0f));
+                    phBody->setAngularVelocity(0.0f);
+                }
+                return false;
+                break;
+            }
+        }
+    }
+    return true;
+}
+
+bool HelloWorld::otherBallGroupHittedFirst() {
+    if (playerInTurn == 1) {
+        if ((!player1Solid && firstContact > 0 && firstContact < 8)//player1 has Stripes and first cantact is solid OR 
+            || (player1Solid && firstContact > 8 && firstContact < 16)) {//player1 has SOLIDS and first contact is STRIPES
+            //illegalPlay = true;
+            //moveCueBAll = true;
+            return true;
+        }
+    }
+    else if (playerInTurn == 2) {
+        if ((player1Solid && firstContact > 0 && firstContact < 8)//player2 has STRIPES and 1st contact is SOLID OR
+            || (!player1Solid && firstContact > 8 && firstContact < 16)) {//player2 has SOLIDS and 1st contact is STRIPES
+            // illegalPlay = true;
+             //moveCueBAll = true;
+            return true;
+        }
+    }
+    else return false;
+}
+
+void HelloWorld::playResult() {
+        if (openTable) {
+            switchPlayer();
+        }
+        else {
+            if (firstContact == 0 || 
+                otherBallGroupHittedFirst() ||
+                firstContact == 8 ||
+                counterPocketed == 0
+                ) {
+                switchPlayer();
+            }
+        }
+        playHasStart = false;
 }
 
 bool HelloWorld::allBodiesStopped() {
@@ -288,14 +393,15 @@ bool HelloWorld::allBodiesStopped() {
     auto scene = Director::getInstance()->getRunningScene();
     auto physicsWorld = scene->getPhysicsWorld();
     auto bodies = physicsWorld->getAllBodies();
-
+    
     for (auto body : bodies) {
-        if ((body->getVelocity().x > 0.1f || body->getVelocity().y > 0.1f) || (body->getAngularVelocity() > 0.1f)) {
-            stopped = false;
-            break;
+        if (body->getTag() < 16) {
+            if ((body->getVelocity().x > 0.1f || body->getVelocity().y > 0.1f) || (body->getAngularVelocity() > 0.1f)) {
+                stopped =  false;
+                break;
+            }
         }
     }
-    if (firstContact == 0 && !gameStart)switchPlayer();///si se llama esta funcion aqui se cambia todo el rato. buscar mecanismo para hacer que funcione
     return stopped;
 }
 
@@ -328,13 +434,13 @@ void HelloWorld::ballFallsIntoPocket(cocos2d::Node* node, Table table, int pocke
     default:
         break;
     }
-    /*aqui hay que implementar algo para asignar un grupo de bolas a cada jugador*/
+    //actions and sequences
     auto delay1 = cocos2d::DelayTime::create(0.2f);
     auto shrink = cocos2d::ScaleBy::create(0.5f, 0.7f);
     auto inflate = cocos2d::ScaleBy::create(0.5f, 1.4f);
     auto fadeOut = cocos2d::FadeOut::create(0.5f);
     auto intoPocket = cocos2d::Spawn::create(roll, delay1, shrink, fadeOut, nullptr);
-    auto moveToScore = cocos2d::MoveTo::create(1.0f, getRackPosition(ballTag));//arreglar para que suceda de manera apropiada
+    auto moveToScore = cocos2d::MoveTo::create(1.0f, getRackPosition(ballTag));
     auto moveToTable = cocos2d::MoveTo::create(1.0f, table.getHeadSpot());
     auto delay2 = cocos2d::DelayTime::create(0.5f);
     auto fadeIn = cocos2d::FadeIn::create(0.5f);
@@ -350,18 +456,19 @@ void HelloWorld::ballFallsIntoPocket(cocos2d::Node* node, Table table, int pocke
     if (ballTag == 0) {
         moveCueBAll = true;
         illegalPlay = true;
+        switchPlayer();
         node->runAction(intoTable);
-        
     } 
     else {
+        //*******player choice should be called here instead
         node->removeAllComponents();
         node->runAction(ballIntoPocket);
     } 
 }
 
 
-void HelloWorld::playerChoice(int player, int ballTag) {
-    if (openTable) {
+void HelloWorld::playerChoice(int ballTag) {//quitar el prametro player: no se usa
+    if (openTable) {//this register starts on true state
         if (ballTag > 0 && ballTag < 8) {
             if (playerInTurn == 1) player1Solid = true;
             else player1Solid = false;
@@ -372,7 +479,7 @@ void HelloWorld::playerChoice(int player, int ballTag) {
         }
         
     }
-    openTable = false;
+    openTable = false;//after the first call to this function it will turn into false state: table is not open any more.
 }
 
 cocos2d::Vec2 HelloWorld::getRackPosition(int ballTag) {
@@ -529,27 +636,39 @@ cocos2d::Vec2 HelloWorld::getRackPosition(int ballTag) {
     return Vec2(500,160);
 }
 
-void HelloWorld::playGame(cocos2d::Node* nodeBall) {
-    playerChoice(playerInTurn,nodeBall->getTag());
-    if (playerInTurn == 1) {
-        if ((!player1Solid && nodeBall->getTag() > 0 && nodeBall->getTag() < 8)
-            || (player1Solid && nodeBall->getTag() > 8 && nodeBall->getTag() < 16)){
-            //illegalPlay = true;
-            //moveCueBAll = true;
-            switchPlayer();
+void HelloWorld::playGame() {
+    //playerChoice(nodeBall->getTag());
+    if (gameIsOn) {
+        if (playerInTurn == 1) {
+            if ((!player1Solid && firstContact > 0 && firstContact < 8)//player1 has Stripes and first cantact is solid OR 
+                || (player1Solid && firstContact > 8 && firstContact < 16)) {//player1 has SOLIDS and first contact is STRIPES
+                //illegalPlay = true;
+                //moveCueBAll = true;
+                switchPlayer();//player1 lost its turn
+                return;
+            }
         }
-    }else{
-        if ((player1Solid && nodeBall->getTag() > 0 && nodeBall->getTag() < 8)
-            || (!player1Solid && nodeBall->getTag() > 8 && nodeBall->getTag() < 16)) {
-           // illegalPlay = true;
-            //moveCueBAll = true;
-            switchPlayer();
+        else if (playerInTurn == 2) {
+            if ((player1Solid && firstContact > 0 && firstContact < 8)//player2 has STRIPES and 1st contact is SOLID OR
+                || (!player1Solid && firstContact > 8 && firstContact < 16)) {//player2 has SOLIDS and 1st contact is STRIPES
+                // illegalPlay = true;
+                 //moveCueBAll = true;
+                switchPlayer();//player2 lost its turn
+                return;
+            }
+        }
+        else if (!onPlay && counterPocketed < 1 && gameIsOn) {
+            switchPlayer();//no ball has been pocketed
+            return;
+        }
+        else if (!onPlay && firstContact == 0 && gameIsOn) {
+            switchPlayer();//no ball has been hit
+            return;
         }
     }
-
 }
 
-void HelloWorld::update(float dt) {
+void HelloWorld::update(float dt) {//Visuals for the cue and aim
     auto scene = Director::getInstance()->getRunningScene();
     if (allBodiesStopped()) {
         playerListener->setEnabled(true);
@@ -559,27 +678,16 @@ void HelloWorld::update(float dt) {
         scene->getChildByTag(24)->setPosition(ballCuePosition);
         scene->getChildByTag(24)->setVisible(true);
     } 
-    else {
+    else {//balls still moving, nathing must be done
         playerListener->setEnabled(false);
         scene->getChildByTag(23)->setVisible(false);
         scene->getChildByTag(24)->setVisible(false);
-    } 
-    //debug
-    auto labelTurn = Label::createWithTTF("", "fonts/arial.ttf", 18);
-    if (labelTurn == nullptr)
-    {
-        problemLoading("'fonts/Marker Felt.ttf'");
     }
-    else
-    {
-        // position the label on the center of the screen
-        labelTurn->setPosition(Vec2(150, 140));
-        //label->setColor(Color3B::RED);
-        // add the label as a child to this layer
-        auto scene = Director::getInstance()->getRunningScene();
-        scene->addChild(labelTurn, 5);
+
+    //evaluating the result of the play
+    if (playHasStart && !playIsOn()) {
+        playResult();
     }
-    labelTurn->setString(std::to_string(playerInTurn));
 }
 
 void HelloWorld::menuCloseCallback(Ref* pSender)

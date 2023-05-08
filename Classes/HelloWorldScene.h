@@ -51,16 +51,19 @@ class HelloWorld : public cocos2d::Scene
 {
 private:
     cocos2d::Vec2 forceCue = cocos2d::Vec2(cocos2d::Vec2::ZERO);
-    bool gameStart = true;
-    bool openTable = true;
-    bool onPlay = false;
-    int firstContact = 0;
-    bool moveCueBAll = true;
-    bool illegalPlay = false;
-    int playerInTurn = 1;
-    bool player1Solid = true;
-    bool rackScoreP1[8] = { false };
-    bool rackScoreP2[8] = { false };
+    //bool gameStart = false;
+    bool gameIsOn;//it will indicate that the game has started, starts flase and turns on with the first cue hit only.
+    bool openTable;
+    bool playHasStart;
+    bool onPlay;
+    int firstContact;
+    int counterPocketed;
+    bool moveCueBAll;
+    bool illegalPlay;
+    int playerInTurn;
+    bool player1Solid;
+    bool rackScoreP1[8];
+    bool rackScoreP2[8];
 
 
     cocos2d::EventListenerTouchOneByOne* playerListener;
@@ -72,12 +75,15 @@ public:
     void update(float dt);
     void menuCloseCallback(cocos2d::Ref* pSender);
     //game play
-    void playGame(cocos2d::Node* nodeBall);
+    bool otherBallGroupHittedFirst();
+    void playResult();
+    bool playIsOn();
+    void playGame();
     void switchPlayer();
     bool allBodiesStopped();
     void ballFallsIntoPocket(cocos2d::Node* node, Table table, int pocketTag, int ballTag);
     cocos2d::Vec2 getRackPosition(int ballTag);
-    void playerChoice(int player, int ballTag);
+    void playerChoice(int ballTag);
     // implement the "static create()" method manually
     CREATE_FUNC(HelloWorld);
 };
