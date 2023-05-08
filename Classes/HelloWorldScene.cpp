@@ -132,12 +132,12 @@ bool HelloWorld::init()
                     int fxBallToBall = AudioEngine::play2d("audio/ball_pocket.mp3", false, 1.0f, nullptr); //the pockets
                     counterPocketed++;
                     if (contact.getShapeA()->getBody()->getTag() < 16) {
-                        ballFallsIntoPocket(nodeA, _table, contact.getShapeB()->getBody()->getTag(), contact.getShapeA()->getBody()->getTag());
                         playerChoice(nodeA->getTag());
+                        ballFallsIntoPocket(nodeA, _table, contact.getShapeB()->getBody()->getTag(), contact.getShapeA()->getBody()->getTag());
                     }
                     if (contact.getShapeB()->getBody()->getTag() < 16) {
-                        ballFallsIntoPocket(nodeB, _table, contact.getShapeA()->getBody()->getTag(), contact.getShapeB()->getBody()->getTag());
                         playerChoice(nodeB->getTag());
+                        ballFallsIntoPocket(nodeB, _table, contact.getShapeA()->getBody()->getTag(), contact.getShapeB()->getBody()->getTag());
                     }
             }
             else {//a ball-ball contact has been detected
@@ -375,6 +375,27 @@ bool HelloWorld::otherBallGroupHittedFirst() {
     else return false;
 }
 
+bool HelloWorld::isContactWith8Bad() {
+    if (firstContact == 8) {
+        if (playerInTurn == 1) {
+            int emptySpace = 0;
+            for (auto score : rackScoreP1) {
+                if (score == false) emptySpace++;
+            }
+            if (emptySpace > 1) return true;
+            else return false;
+        }
+        if (playerInTurn == 2) {
+            int emptySpace = 0;
+            for (auto score : rackScoreP2) {
+                if (score == false) emptySpace++;
+            }
+            if (emptySpace > 1) return true;
+            else return false;
+        }
+    }
+}
+
 void HelloWorld::playResult() {
         if (openTable) {
             switchPlayer();
@@ -382,7 +403,7 @@ void HelloWorld::playResult() {
         else {
             if (firstContact == 0 || 
                 otherBallGroupHittedFirst() ||
-                firstContact == 8 ||
+                isContactWith8Bad() ||
                 counterPocketed == 0
                 ) {
                 switchPlayer();
