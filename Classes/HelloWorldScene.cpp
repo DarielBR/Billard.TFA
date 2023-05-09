@@ -114,6 +114,8 @@ bool HelloWorld::init()
     Ball ballCue = Ball(0, this, 0, _table.getHeadSpot());
     //cocos2d::Vec2 forceCue = cocos2d::Vec2(0,0);//force to apply on cue ball
     Cue cue = Cue(this, 2, ballCue.faceSprite->getPosition());
+
+
     ////////////////////////////////////
     // 5. Collitioin handling
     auto collitionListener = cocos2d::EventListenerPhysicsContact::create();
@@ -332,8 +334,17 @@ bool HelloWorld::init()
 }
 
 void HelloWorld::switchPlayer() {
-    if (playerInTurn == 1) playerInTurn = 2;
-    else if(playerInTurn == 2) playerInTurn = 1;
+    auto scene = Director::getInstance()->getRunningScene();
+    if (playerInTurn == 1) {
+        playerInTurn = 2;
+        //scene->getChildByTag(25)->setVisible(false);
+        //scene->getChildByTag(26)->setVisible(true);
+    } 
+    else if (playerInTurn == 2) {
+        playerInTurn = 1;
+        //scene->getChildByTag(26)->setVisible(false);
+        //scene->getChildByTag(25)->setVisible(true);
+    } 
 }
 
 bool HelloWorld::playIsOn() {
@@ -381,7 +392,10 @@ bool HelloWorld::isContactWith8Bad() {
             for (auto score : rackScoreP1) {
                 if (score == false) emptySpace++;
             }
-            if (emptySpace > 1) return true;
+            if (emptySpace > 1) {
+                //game is over and must go to a restart screen
+                return true;
+            } 
             else return false;
         }
         if (playerInTurn == 2) {
@@ -389,7 +403,10 @@ bool HelloWorld::isContactWith8Bad() {
             for (auto score : rackScoreP2) {
                 if (score == false) emptySpace++;
             }
-            if (emptySpace > 1) return true;
+            if (emptySpace > 1) {
+                //idem
+                return true;
+            } 
             else return false;
         }
     }
@@ -410,6 +427,7 @@ void HelloWorld::playResult() {
             }
         }
         playHasStart = false;
+
 }
 
 bool HelloWorld::allBodiesStopped() {
@@ -420,7 +438,7 @@ bool HelloWorld::allBodiesStopped() {
     
     for (auto body : bodies) {
         if (body->getTag() < 16) {
-            if ((body->getVelocity().x > 0.1f || body->getVelocity().y > 0.1f) || (body->getAngularVelocity() > 0.1f)) {
+            if ((body->getVelocity().x > 0.001f || body->getVelocity().y > 0.001f) || (body->getAngularVelocity() > 0.1f)) {
                 stopped =  false;
                 break;
             }
@@ -713,11 +731,24 @@ void HelloWorld::update(float dt) {//Visuals for the cue and aim
         scene->getChildByTag(23)->setVisible(true);
         scene->getChildByTag(24)->setPosition(ballCuePosition);
         scene->getChildByTag(24)->setVisible(true);
+        //player sprites
+        scene->getChildByTag(25)->setPosition(ballCuePosition);
+        scene->getChildByTag(26)->setPosition(ballCuePosition);
+        if (playerInTurn == 1) {
+            scene->getChildByTag(25)->setVisible(true);
+            scene->getChildByTag(26)->setVisible(false);
+        }
+        else if (playerInTurn == 2) {
+            scene->getChildByTag(26)->setVisible(true);
+            scene->getChildByTag(25)->setVisible(false);
+        }
     } 
     else {//balls still moving, nathing must be done
         playerListener->setEnabled(false);
         scene->getChildByTag(23)->setVisible(false);
         scene->getChildByTag(24)->setVisible(false);
+        scene->getChildByTag(25)->setVisible(false);
+        scene->getChildByTag(26)->setVisible(false);
     }
 
     //evaluating the result of the play

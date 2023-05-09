@@ -809,10 +809,12 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Classes\SplashScene.cpp" />
     <ClCompile Include="Cue.cpp" />
     <ClCompile Include="Table.cpp" />
     <ClInclude Include="..\Classes\Ball.h" />
     <ClInclude Include="..\Classes\Cue.h" />
+    <ClInclude Include="..\Classes\SplashScene.h" />
     <ClInclude Include="..\Classes\Table.h" />
     <ClInclude Include="C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\Classes\AppDelegate.h" />
     <ClInclude Include="C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\Classes\HelloWorldScene.h" />
