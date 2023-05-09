@@ -23,6 +23,8 @@
  ****************************************************************************/
 
 #include "HelloWorldScene.h"
+#include "P1Wins.h"
+#include "P2Wins.h"
 #include "Ball.h"
 #include "Table.h"
 #include "Cue.h"
@@ -385,7 +387,7 @@ bool HelloWorld::otherBallGroupHittedFirst() {
     else return false;
 }
 
-bool HelloWorld::isContactWith8Bad() {
+bool HelloWorld::isContactWith8Bad() {//this code must be improved to achieve proper behavior.
     if (firstContact == 8) {
         if (playerInTurn == 1) {
             int emptySpace = 0;
@@ -393,8 +395,11 @@ bool HelloWorld::isContactWith8Bad() {
                 if (score == false) emptySpace++;
             }
             if (emptySpace > 1) {
-                //game is over and must go to a restart screen
-                return true;
+                auto director = Director::getInstance();
+                auto scene4 = P2WinsScene::createScene();
+                director->pushScene(scene4);
+                //director->replaceScene(this);
+                return true;//it may be necesary to comment remove this line;
             } 
             else return false;
         }
@@ -404,8 +409,11 @@ bool HelloWorld::isContactWith8Bad() {
                 if (score == false) emptySpace++;
             }
             if (emptySpace > 1) {
-                //idem
-                return true;
+                auto director = Director::getInstance();
+                auto scene3 = P1WinsScene::createScene();
+                director->pushScene(scene3);
+                //director->replaceScene(this);
+                return true;//it may be necesary to comment remove this line;
             } 
             else return false;
         }
@@ -418,11 +426,7 @@ void HelloWorld::playResult() {
             switchPlayer();
         }
         else {
-            if (firstContact == 0 || 
-                otherBallGroupHittedFirst() ||
-                isContactWith8Bad() ||
-                counterPocketed == 0
-                ) {
+            if ( (isContactWith8Bad()) || (otherBallGroupHittedFirst()) || (firstContact == 0) || (counterPocketed == 0)) {
                 switchPlayer();
             }
         }

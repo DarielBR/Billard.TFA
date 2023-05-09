@@ -13,8 +13,19 @@ Table::Table(cocos2d::Scene* scene, int zOrder, cocos2d::Vec2 position) {
 	//score racks sprites
 	scoreSpriteP1 = cocos2d::Sprite::create("img/score_rack.png");
 	scoreSpriteP1->setPosition(Vec2(500, 160));// arrange in reference to positioin passed in the costructor
+	auto player1Sprite = cocos2d::Sprite::create("img/player1.png");
+	player1Sprite->setAnchorPoint(Vec2(0.5f,0.5f));
+	player1Sprite->setScale(0.3f);
+	player1Sprite->setPosition(Vec2(180, 75));
+	scoreSpriteP1->addChild(player1Sprite,1);
+
 	scoreSpriteP2 = cocos2d::Sprite::create("img/score_rack.png");
 	scoreSpriteP2->setPosition(Vec2(1000, 160));
+	auto player2Sprite = cocos2d::Sprite::create("img/player2.png");
+	player2Sprite->setScale(0.3f);
+	player2Sprite->setAnchorPoint(Vec2(0.5f, 0.5f));
+	player2Sprite->setPosition(Vec2(180, 75));
+	scoreSpriteP2->addChild(player2Sprite, 1);
 	//border
 	tableBorder = cocos2d::Node::create();
 

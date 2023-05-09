@@ -25,6 +25,12 @@
     <ClCompile Include="..\Classes\SplashScene.cpp">
       <Filter>Source Files\Classes</Filter>
     </ClCompile>
+    <ClCompile Include="P1Wins.cpp">
+      <Filter>Source Files\Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="P2Wins.cpp">
+      <Filter>Source Files\Classes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\Classes\AppDelegate.h">
@@ -67,6 +73,12 @@
       <Filter>Source Files\Classes</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\SplashScene.h">
+      <Filter>Source Files\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\P1Wins.h">
+      <Filter>Source Files\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\P2Wins.h">
       <Filter>Source Files\Classes</Filter>
     </ClInclude>
   </ItemGroup>

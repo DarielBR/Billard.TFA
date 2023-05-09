@@ -811,9 +811,13 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
   <ItemGroup>
     <ClCompile Include="..\Classes\SplashScene.cpp" />
     <ClCompile Include="Cue.cpp" />
+    <ClCompile Include="P1Wins.cpp" />
+    <ClCompile Include="P2Wins.cpp" />
     <ClCompile Include="Table.cpp" />
     <ClInclude Include="..\Classes\Ball.h" />
     <ClInclude Include="..\Classes\Cue.h" />
+    <ClInclude Include="..\Classes\P1Wins.h" />
+    <ClInclude Include="..\Classes\P2Wins.h" />
     <ClInclude Include="..\Classes\SplashScene.h" />
     <ClInclude Include="..\Classes\Table.h" />
     <ClInclude Include="C:\Users\Dariel\Documents\Projects\cocos2d-x-4.0\Billard.TFA\Classes\AppDelegate.h" />

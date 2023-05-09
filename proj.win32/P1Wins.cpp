@@ -1,12 +1,12 @@
-#include "SplashScene.h"
+#include "P1Wins.h"
 #include "cocos2d.h"
 #include "HelloWorldScene.h"
 #include "audio/include/AudioEngine.h"
 USING_NS_CC;
 
-Scene* SplashScene::createScene()
+Scene* P1WinsScene::createScene()
 {
-    return SplashScene::create();
+    return P1WinsScene::create();
 }
 
 // Print useful error message instead of segfaulting when files are not there.
@@ -17,7 +17,7 @@ static void problemLoading(const char* filename)
 }
 
 // on "init" you need to initialize your instance
-bool SplashScene::init()
+bool P1WinsScene::init()
 {
     //////////////////////////////
     // 1. super init first
@@ -38,7 +38,7 @@ bool SplashScene::init()
 
     //////////////////////////////
     //3. Crreating a sprite for Game Title
-    auto label = Sprite::create("img/8 Ball Title Effects.png");
+    auto label = Sprite::create("img/P1Wins.png");
     label->setScale(1.10f);
     label->setPosition(Vec2(center.x, center.y + 200));
     this->addChild(label, 0);
@@ -61,7 +61,7 @@ bool SplashScene::init()
     exitItem->setPosition(Vec2(exitItem->getPosition().x, exitItem->getPosition().y - 250));
     menuItems.pushBack(exitItem);
 
-    auto playItem = MenuItemImage::create("img/play.png", "img/play.png",
+    auto playItem = MenuItemImage::create("img/reset.png", "img/reset.png",
         [=](Ref* sender) {
             //handling music and sounds
             AudioEngine::pause(intro);
@@ -72,18 +72,18 @@ bool SplashScene::init()
             //auto scene2 = HelloWorld::createScene();
             auto director = Director::getInstance();
             //director->replaceScene(TransitionFade::create(0.5, , Color3B(0, 0, 0)));
-            director->popScene();
-            
+            director->popToRootScene();
+
             //Director::getInstance()->end();
             //Director::getInstance()->runWithScene(gameScene);
         });
     //playItem->setScale(0.5);
     playItem->setPosition(Vec2(playItem->getPosition().x, playItem->getPosition().y - 100));
-    menuItems.pushBack(playItem);
+    //menuItems.pushBack(playItem);
 
     auto menu = Menu::createWithArray(menuItems);
     menu->setPosition(center);
-    menu->setAnchorPoint(Vec2(0.5f,0.5f));
+    menu->setAnchorPoint(Vec2(0.5f, 0.5f));
     this->addChild(menu, 10);
 
     return true;
