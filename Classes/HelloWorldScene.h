@@ -76,6 +76,7 @@ public:
     void menuCloseCallback(cocos2d::Ref* pSender);
     //game play
     bool isContactWith8Bad();
+    void checkPocketing8Ball();
     bool otherBallGroupHittedFirst();
     void playResult();
     bool playIsOn();

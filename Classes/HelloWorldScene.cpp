@@ -62,10 +62,6 @@ bool HelloWorld::init()
     /////////////////////////////
     // 2. Starting audio engine and reproducing intro background music
     AudioEngine::setEnabled(true);
-    //int fxBallToBall = AudioEngine::play2d("audio/ball_ball.mp3", false, 1.0f, nullptr);
-    //int fxBallToRail = AudioEngine::play2d("audio/ball_rail.mp3", false, 1.0f, nullptr);
-    //int fxBallToPocket = AudioEngine::play2d("audio/ball_pocket.mp3", false, 1.0f, nullptr);
-    //AudioEngine::resume(fxBallToBall);
 
     /////////////////////////////
     // 3. Physics World configuration
@@ -78,14 +74,14 @@ bool HelloWorld::init()
     ////////////////////////////
     // 3. Flags and Registers initialization
     gameIsOn = false;
-    openTable = true;
+    openTable = true;//good
     onPlay = false;
-    playHasStart = false;
-    firstContact = 0;
-    counterPocketed = 0;
-    moveCueBAll = true;
-    illegalPlay = false;
-    playerInTurn = 1;
+    playHasStart = false;//good
+    firstContact = 0;//good
+    counterPocketed = 0;//good
+    moveCueBAll = true;//good
+    illegalPlay = false;//good
+    playerInTurn = 1;//good
     player1Solid = true;
     rackScoreP1[8] = { false };
     rackScoreP2[8] = { false };
@@ -114,7 +110,6 @@ bool HelloWorld::init()
     Ball ball15 = Ball(15, this, 0, _table.getRackPosition(rack[13]));
     
     Ball ballCue = Ball(0, this, 0, _table.getHeadSpot());
-    //cocos2d::Vec2 forceCue = cocos2d::Vec2(0,0);//force to apply on cue ball
     Cue cue = Cue(this, 2, ballCue.faceSprite->getPosition());
 
 
@@ -150,13 +145,9 @@ bool HelloWorld::init()
                         || (contact.getShapeB()->getBody()->getTag() > 0 && contact.getShapeB()->getBody()->getTag() < 16)) {//shapeB is a ball
                         if (contact.getShapeA()->getBody()->getTag() == 0) {//is shapeA the cue-ball?
                             firstContact = contact.getShapeB()->getBody()->getTag();//then the first contact is shapeB
-                            //playerChoice(firstContact);
-                            //playGame(nodeB);//call to the game rules
                         }
                         else if (contact.getShapeB()->getBody()->getTag() == 0) {//is shapeB the cue-ball
                             firstContact = contact.getShapeA()->getBody()->getTag();//then the first contact is shapeA
-                            //playerChoice(firstContact);
-                            //playGame(nodeA);//idem
                         }
                     }
                 }
@@ -184,11 +175,6 @@ bool HelloWorld::init()
     auto labelFirstContact = Label::createWithTTF("", "fonts/arial.ttf", 18);
     labelFirstContact->setPosition(Vec2(100, 160));
     this->addChild(labelFirstContact, 5);
-
-    
-    
-    
-    
 
     auto labelX = Label::createWithTTF("", "fonts/arial.ttf", 18);
     if (labelX == nullptr)
@@ -267,7 +253,7 @@ bool HelloWorld::init()
                     position.y = 335 + ballCue.faceSprite->getBoundingBox().size.height / 2;
                 ballCue.faceSprite->setPosition(position);
             }
-            else {
+            else {//movement allowed withing head third
                 if (touch->getLocation().x > _table.getHeadStringX()) position.x = _table.getHeadStringX();
                 if (touch->getLocation().x < 305 + ballCue.faceSprite->getBoundingBox().size.width / 2)
                     position.x = 310 + ballCue.faceSprite->getBoundingBox().size.width / 2;
@@ -278,7 +264,7 @@ bool HelloWorld::init()
                 ballCue.faceSprite->setPosition(position);
             }
         }
-        else{
+        else{//aim for a play
             forceCue = ballCue.faceSprite->getPosition() - touch->getLocation();
             //move the player along the touch within a radius of 50
             //normalize the movement
@@ -301,7 +287,7 @@ bool HelloWorld::init()
         if (illegalPlay) {
             illegalPlay = false;
             //wait until cue ball is settled
-             while (ballCue.phBody->getVelocity() > Vec2(0.0f, 0.0f)) {
+             while (ballCue.phBody->getVelocity() > Vec2(0.0f, 0.0f)) {//REVISAR ESTE BUCLE PROPUESTO A ELIMINAR
                 auto a = 'a';
              }
         }
@@ -319,13 +305,10 @@ bool HelloWorld::init()
             firstContact = 0;//reset
             counterPocketed = 0;//reset
             playHasStart = true;
-            //onPlay = true;//on a play
-            //this->removeChildByTag(23, true);
-            //this->removeChildByTag(24, true);
         }
     };
     
-    
+    //Registering event handlers
     _eventDispatcher->addEventListenerWithSceneGraphPriority(collitionListener, this);
     _eventDispatcher->addEventListenerWithSceneGraphPriority(mouseListener, this);//debug only
     _eventDispatcher->addEventListenerWithSceneGraphPriority(playerListener, this);//debug only
@@ -334,31 +317,27 @@ bool HelloWorld::init()
     
     return true;
 }
-
+/**
+* Switches the players turn flag
+*/
 void HelloWorld::switchPlayer() {
     auto scene = Director::getInstance()->getRunningScene();
     if (playerInTurn == 1) {
         playerInTurn = 2;
-        //scene->getChildByTag(25)->setVisible(false);
-        //scene->getChildByTag(26)->setVisible(true);
     } 
     else if (playerInTurn == 2) {
         playerInTurn = 1;
-        //scene->getChildByTag(26)->setVisible(false);
-        //scene->getChildByTag(25)->setVisible(true);
     } 
 }
-
+/**
+* Returns true if there is any ball in movement.
+*/
 bool HelloWorld::playIsOn() {
     auto scene = Director::getInstance()->getRunningScene();
     auto phBodies = scene->getPhysicsWorld()->getAllBodies();
     for (auto phBody : phBodies) {
-        if (phBody->getTag() < 16) {
+        if (phBody->getTag() < 16) {//balls only
             if (phBody->getVelocity().x > 0.001f || phBody->getVelocity().y > 0.001f || phBody->getAngularVelocity() > 0.001f) {
-                //if (phBody->getVelocity().x < 0.001f || phBody->getVelocity().y < 0.001f || phBody->getAngularVelocity() < 0.001f) {
-                //    phBody->setVelocity(Vec2(0.0f, 0.0f));
-                //    phBody->setAngularVelocity(0.0f);
-                //}
                 return true;
                 break;
             }
@@ -366,39 +345,35 @@ bool HelloWorld::playIsOn() {
     }
     return false;
 }
-
+/**
+* Returns true if a ball form wrong group has been hitted first.
+*/
 bool HelloWorld::otherBallGroupHittedFirst() {
     if (playerInTurn == 1) {
         if ((!player1Solid && firstContact > 0 && firstContact < 8)//player1 has Stripes and first cantact is solid OR 
             || (player1Solid && firstContact > 8 && firstContact < 16)) {//player1 has SOLIDS and first contact is STRIPES
-            //illegalPlay = true;
-            //moveCueBAll = true;
             return true;
         }
     }
     else if (playerInTurn == 2) {
         if ((player1Solid && firstContact > 0 && firstContact < 8)//player2 has STRIPES and 1st contact is SOLID OR
             || (!player1Solid && firstContact > 8 && firstContact < 16)) {//player2 has SOLIDS and 1st contact is STRIPES
-            // illegalPlay = true;
-             //moveCueBAll = true;
             return true;
         }
     }
     else return false;
 }
-
+/**
+* Evaluates the contanct with the 8-ball. If illegal returns true, if not, returns false.
+*/
 bool HelloWorld::isContactWith8Bad() {//this code must be improved to achieve proper behavior.
     if (firstContact == 8) {
         if (playerInTurn == 1) {
             int emptySpace = 0;
-            for (auto score : rackScoreP1) {
+            for (auto score : rackScoreP1) {//check for empty spaces in the score
                 if (score == false) emptySpace++;
             }
-            if (emptySpace > 1) {
-                auto director = Director::getInstance();
-                auto scene4 = P2WinsScene::createScene();
-                director->pushScene(scene4);
-                //director->replaceScene(this);
+            if (emptySpace > 1) {//mora than one found, thus contact is illegal
                 return true;//it may be necesary to comment remove this line;
             } 
             else return false;
@@ -409,10 +384,6 @@ bool HelloWorld::isContactWith8Bad() {//this code must be improved to achieve pr
                 if (score == false) emptySpace++;
             }
             if (emptySpace > 1) {
-                auto director = Director::getInstance();
-                auto scene3 = P1WinsScene::createScene();
-                director->pushScene(scene3);
-                //director->replaceScene(this);
                 return true;//it may be necesary to comment remove this line;
             } 
             else return false;
@@ -420,7 +391,35 @@ bool HelloWorld::isContactWith8Bad() {//this code must be improved to achieve pr
     }
     return false;
 }
-
+/**
+* Evaluates the pocketing of the 8-ball. If illegal finishes the game, if not, returns false.
+*/
+void HelloWorld::checkPocketing8Ball() {//this code must be improved to achieve proper behavior.
+    if (playerInTurn == 1) {
+        int emptySpace = 0;
+        for (auto score : rackScoreP1) {//check for empty spaces in the score
+            if (score == false) emptySpace++;
+        }
+        if (emptySpace > 1) {//mora than one found, thus contact is illegal
+            auto director = Director::getInstance();
+            auto scene4 = P2WinsScene::createScene();
+            director->pushScene(scene4);
+        }
+    }else if (playerInTurn == 2) {
+        int emptySpace = 0;
+        for (auto score : rackScoreP2) {
+            if (score == false) emptySpace++;
+        }
+        if (emptySpace > 1) {
+            auto director = Director::getInstance();
+            auto scene3 = P1WinsScene::createScene();
+            director->pushScene(scene3);               
+        }
+    }
+}
+/**
+* Evaluates the result of the current play. 
+*/
 void HelloWorld::playResult() {
         if (openTable) {
             switchPlayer();
@@ -430,10 +429,12 @@ void HelloWorld::playResult() {
                 switchPlayer();
             }
         }
-        playHasStart = false;
+        playHasStart = false;//reset
 
 }
-
+/**
+* Evaluates if all physics bodies have stopped
+*/
 bool HelloWorld::allBodiesStopped() {
     bool stopped = true;
     auto scene = Director::getInstance()->getRunningScene();
@@ -450,13 +451,12 @@ bool HelloWorld::allBodiesStopped() {
     }
     return stopped;
 }
-
+/**
+* Performs necesary visuals when a ball has collides with a pocket.
+*/
 void HelloWorld::ballFallsIntoPocket(cocos2d::Node* node, Table table, int pocketTag, int ballTag) {
+    if (ballTag == 8) checkPocketing8Ball();
     int value = ballTag;//int value is there for scoring purpouses
-    if (ballTag == 8) {
-        //game over
-        //preguntar por player playing y mostrar pantalla de GameOver apropiada
-    }
     cocos2d::MoveTo* roll;
     switch (pocketTag) {
     case 17:
@@ -500,19 +500,20 @@ void HelloWorld::ballFallsIntoPocket(cocos2d::Node* node, Table table, int pocke
     auto cueIntoPocket = cocos2d::Sequence::create(intoPocket, nullptr);
     auto ballIntoPocket = cocos2d::Sequence::create(intoPocket, intoScore, nullptr);
     if (ballTag == 0) {
+        node->runAction(intoTable);
         moveCueBAll = true;
         illegalPlay = true;
+        playHasStart = false;//reset
         switchPlayer();
-        node->runAction(intoTable);
     } 
     else {
-        //*******player choice should be called here instead
         node->removeAllComponents();
         node->runAction(ballIntoPocket);
     } 
 }
-
-
+/**
+* When the table is open, it will set player's ball-group choice for the game.
+*/
 void HelloWorld::playerChoice(int ballTag) {//quitar el prametro player: no se usa
     if (openTable) {//this register starts on true state
         if (ballTag > 0 && ballTag < 8) {
@@ -539,7 +540,9 @@ void HelloWorld::playerChoice(int ballTag) {//quitar el prametro player: no se u
     }
     openTable = false;//after the first call to this function it will turn into false state: table is not open any more.
 }
-
+/**
+* Gets a free score position and returnr it position coordinates.
+*/
 cocos2d::Vec2 HelloWorld::getRackPosition(int ballTag) {
     //TODO recorrer el arreglo de posiciones segun el jugador dado y devolver el primer espacio vacio.
     if (ballTag == 0 || ballTag == 8) return Vec2(Vec2::ZERO);
@@ -693,7 +696,9 @@ cocos2d::Vec2 HelloWorld::getRackPosition(int ballTag) {
     }
     //return Vec2(500,160);
 }
-
+/**
+* DEPRECATED
+*/
 void HelloWorld::playGame() {
     //playerChoice(nodeBall->getTag());
     if (gameIsOn) {
