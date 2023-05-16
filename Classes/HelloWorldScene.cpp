@@ -62,6 +62,8 @@ bool HelloWorld::init()
     /////////////////////////////
     // 2. Starting audio engine and reproducing intro background music
     AudioEngine::setEnabled(true);
+    int ambience = AudioEngine::play2d("audio/game_ambience.mp3", true, 0.1f, nullptr);
+    AudioEngine::resume(ambience);
 
     /////////////////////////////
     // 3. Physics World configuration
