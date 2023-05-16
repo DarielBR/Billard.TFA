@@ -52,9 +52,6 @@ bool SplashScene::init()
         [=](Ref* sender) {
             //handling music and sounds
             AudioEngine::pause(intro);
-            //int clickOut = AudioEngine::play2d("res/audio/select.mp3", false, 0.5f, nullptr);
-            //AudioEngine::resume(clickOut);
-            //closing application
             Director::getInstance()->end();
         });
     //exitItem->setScale(0.5);
@@ -65,19 +62,9 @@ bool SplashScene::init()
         [=](Ref* sender) {
             //handling music and sounds
             AudioEngine::pause(intro);
-            //int clickOut = AudioEngine::play2d("res/audio/click.mp3", false, 0.5f, nullptr);
-            //AudioEngine::resume(clickOut);
-            //going to the game scene
-            //auto gameScene = HelloWorld::createScene();
-            //auto scene2 = HelloWorld::createScene();
             auto director = Director::getInstance();
-            //director->replaceScene(TransitionFade::create(0.5, , Color3B(0, 0, 0)));
             director->popScene();
-            
-            //Director::getInstance()->end();
-            //Director::getInstance()->runWithScene(gameScene);
         });
-    //playItem->setScale(0.5);
     playItem->setPosition(Vec2(playItem->getPosition().x, playItem->getPosition().y - 100));
     menuItems.pushBack(playItem);
 

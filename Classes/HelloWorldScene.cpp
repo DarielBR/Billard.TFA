@@ -73,18 +73,18 @@ bool HelloWorld::init()
     
     ////////////////////////////
     // 3. Flags and Registers initialization
-    gameIsOn = false;
+    gameIsOn = false;//DEPRECATED
     openTable = true;//good
-    onPlay = false;
+    onPlay = false;//DEPRECATED
     playHasStart = false;//good
     firstContact = 0;//good
     counterPocketed = 0;//good
     moveCueBAll = true;//good
     illegalPlay = false;//good
     playerInTurn = 1;//good
-    player1Solid = true;
-    rackScoreP1[8] = { false };
-    rackScoreP2[8] = { false };
+    player1Solid = true;//good
+    rackScoreP1[8] = { false };//good
+    rackScoreP2[8] = { false };//good
 
 
     ////////////////////////////
@@ -156,7 +156,8 @@ bool HelloWorld::init()
         return true;
     };
 
-    /*debug block*/
+    /* 
+    //debug block
     auto labelOnPlay = Label::createWithTTF("", "fonts/arial.ttf", 18);
     labelOnPlay->setPosition(Vec2(100, 260));
     this->addChild(labelOnPlay, 5);
@@ -216,6 +217,8 @@ bool HelloWorld::init()
         labelChoice->setString("player 1 has solids: " + std::to_string(player1Solid));
         labelHits->setString("number of pocketed: " + std::to_string(counterPocketed));
     };
+    //debug block end 
+    */
     
     //////////////////////////////////
     // 6. Touch events hangling
@@ -310,7 +313,7 @@ bool HelloWorld::init()
     
     //Registering event handlers
     _eventDispatcher->addEventListenerWithSceneGraphPriority(collitionListener, this);
-    _eventDispatcher->addEventListenerWithSceneGraphPriority(mouseListener, this);//debug only
+    //_eventDispatcher->addEventListenerWithSceneGraphPriority(mouseListener, this);//debug only
     _eventDispatcher->addEventListenerWithSceneGraphPriority(playerListener, this);//debug only
     
     this->scheduleUpdate();
@@ -403,6 +406,8 @@ void HelloWorld::checkPocketing8Ball() {//this code must be improved to achieve 
         if (emptySpace > 1) {//mora than one found, thus contact is illegal
             auto director = Director::getInstance();
             auto scene4 = P2WinsScene::createScene();
+            auto scene2 = HelloWorld::createScene();
+            director->replaceScene(scene2);
             director->pushScene(scene4);
         }
     }else if (playerInTurn == 2) {
@@ -413,6 +418,8 @@ void HelloWorld::checkPocketing8Ball() {//this code must be improved to achieve 
         if (emptySpace > 1) {
             auto director = Director::getInstance();
             auto scene3 = P1WinsScene::createScene();
+            auto scene2 = HelloWorld::createScene();
+            director->replaceScene(scene2);
             director->pushScene(scene3);               
         }
     }
