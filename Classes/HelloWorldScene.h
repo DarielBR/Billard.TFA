@@ -51,8 +51,7 @@ class HelloWorld : public cocos2d::Scene
 {
 private:
     cocos2d::Vec2 forceCue = cocos2d::Vec2(cocos2d::Vec2::ZERO);
-    //bool gameStart = false;
-    bool gameIsOn;//it will indicate that the game has started, starts flase and turns on with the first cue hit only.
+    bool gameIsOn;
     bool openTable;
     bool playHasStart;
     bool onPlay;
@@ -66,15 +65,12 @@ private:
     bool rackScoreP2[8];
 
 
-    cocos2d::EventListenerTouchOneByOne* playerListener;
-    //Table _table = -1;
+    cocos2d::EventListenerTouchOneByOne* playerListener;;
 public:
     static cocos2d::Scene* createScene();
-    //cocos2d
     virtual bool init();
     void update(float dt);
     void menuCloseCallback(cocos2d::Ref* pSender);
-    //game play
     bool isContactWith8Bad();
     void checkPocketing8Ball();
     bool otherBallGroupHittedFirst();
@@ -86,7 +82,6 @@ public:
     void ballFallsIntoPocket(cocos2d::Node* node, Table table, int pocketTag, int ballTag);
     cocos2d::Vec2 getRackPosition(int ballTag);
     void playerChoice(int ballTag);
-    // implement the "static create()" method manually
     CREATE_FUNC(HelloWorld);
 };
 

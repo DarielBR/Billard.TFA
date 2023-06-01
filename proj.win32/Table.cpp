@@ -239,24 +239,3 @@ std::array<int, 14> Table::magicRack(){
 	
 	return rackPositions;
 }
-
-/*
-void Table::ballIntoPocket(cocos2d::Node* node, int pocketTag, int value)
-{
-	node->removeAllComponents();
-	cocos2d::MoveTo* roll;
-	switch(pocketTag){
-	case 17:
-		roll = cocos2d::MoveTo::create(0.5f, Vec2(295,768));
-		break;
-	default:
-		break;
-	}
-	auto delay = cocos2d::DelayTime::create(0.2f);
-	auto shrink = cocos2d::ScaleBy::create(0.5f, 0.7f);
-	auto fadeOut = cocos2d::FadeOut::create(0.5f);
-	auto shrinkAndFade = cocos2d::Spawn::create(shrink, fadeOut, nullptr);
-	auto fallIntoPocket = cocos2d::Sequence::create(roll, delay, shrinkAndFade, nullptr);
-	node->runAction(fallIntoPocket);
-	node->removeFromParentAndCleanup(true);
-}*/

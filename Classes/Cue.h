@@ -1,6 +1,9 @@
 #pragma once
 #include "cocos2d.h"
-//just a visual feature
+
+#ifndef __CUE_H__
+#define __CUE_H__
+
 class Cue
 {
 public:
@@ -12,3 +15,4 @@ public:
 	void moveAround();
 };
 
+#endif // __CUE_H__
